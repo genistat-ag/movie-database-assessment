@@ -143,3 +143,5 @@ SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
 }
+
+AUTHENTICATION_BACKENDS = ['api_crud.backend.EmailOrUsernameModelAuthenticationBackend']
