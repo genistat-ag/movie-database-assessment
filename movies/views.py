@@ -12,7 +12,16 @@ from .serializers import OwnMovieSerializer
 
 
 class ListCreateMovieAPIView(mixins.MovieMixin, ListCreateAPIView):
-    """ Here, authenticated users can see all movies for get request"""
+    """
+    <div style='text-align: justify;'>
+        This API is used to create or view movies. it is only for authenticated users.
+        authenticated users can see all movies but can't modify it. he/she only able to modify his/her own movies.
+        <ul>
+        <li> It performs create operation after sending a post request </li>
+        <li> It gives a list of movie after sending a get request.</li>
+        </ul>
+    </div>
+    """
 
     pagination_class = CustomPagination
     filter_backends = (filters.DjangoFilterBackend,)
@@ -28,7 +37,14 @@ class ListCreateMovieAPIView(mixins.MovieMixin, ListCreateAPIView):
 
 
 class OwnMovieListView(mixins.MovieMixin, ListAPIView):
-    """ Here, only authenticated users can see his/her own movies"""
+    """
+    <div style='text-align: justify;'>
+        This API is used to see own movie list. only authenticated users can see his/her own movies
+        <ul>
+            <li> It gives a list of own movie after sending a get request.</li>
+        </ul>
+    </div>
+    """
 
     serializer_class = OwnMovieSerializer
 
@@ -37,6 +53,18 @@ class OwnMovieListView(mixins.MovieMixin, ListAPIView):
 
 
 class RetrieveUpdateDestroyMovieAPIView(mixins.MovieMixin, RetrieveUpdateDestroyAPIView):
+    """
+    <div style='text-align: justify;'>
+        This API is used to get Three HTTP methods functionality like put, patch, and delete for movie.
+        it is only for authenticated users and non-authenticated users can't access it. A movie can only be updated by
+        its creator. but all movies created by users are accessible for viewing by any authenticated user.
+        <ul>
+            <li> It performs an update operation after sending a put request.</li>
+            <li> It performs a partial update operation after sending a patch request.</li>
+            <li> It performs a delete operation after sending a delete request.</li>
+        </ul>
+    </div>
+    """
 
     def get_object(self):
         """ A movie can only be updated by its creator. """
@@ -46,6 +74,15 @@ class RetrieveUpdateDestroyMovieAPIView(mixins.MovieMixin, RetrieveUpdateDestroy
 
 
 class ReportCreateAPIView(mixins.ReportMixin, CreateAPIView):
+    """
+    <div style='text-align: justify;'>
+        This API is used to create report. it's only open for authenticated users.
+        <ul>
+             <li> It performs create operation after sending a post request </li>
+        </ul>
+    </div>
+    """
+
     permission_classes = (IsAuthenticated,)
 
     def perform_create(self, serializer):
@@ -54,15 +91,40 @@ class ReportCreateAPIView(mixins.ReportMixin, CreateAPIView):
 
 
 class ReportListAPIView(mixins.ReportMixin, ListAPIView):
+    """
+    <div style='text-align: justify;'>
+        This API is used to update report. it's only open for authenticated admin users.
+        <ul>
+            <li> It gives a list of report after sending a get request.</li>
+        </ul>
+    </div>
+    """
     pass
 
 
 class ReportUpdateAPIView(mixins.ReportMixin, UpdateAPIView):
+    """
+    <div style='text-align: justify;'>
+        This API is used to update report. it's only open for authenticated admin users.
+        <ul>
+            <li> It performs an update operation after sending a put request.</li>
+            <li> It performs a partial update operation after sending a patch request.</li>
+        </ul>
+    </div>
+    """
     pass
 
 
 class ListCreateReviewAPIView(mixins.RatingMixin, ListCreateAPIView):
-    """ Only authenticated users can give ratings. """
+    """
+    <div style='text-align: justify;'>
+        This API is used to create or view ratting list. it is only for authenticated users.
+        <ul>
+        <li> It performs create operation after sending a post request </li>
+        <li> It gives a list of ratting after sending a get request.</li>
+        </ul>
+    </div>
+    """
 
     def perform_create(self, serializer):
         """ Don't create more than one ratting for a single movie by same user"""
@@ -74,6 +136,17 @@ class ListCreateReviewAPIView(mixins.RatingMixin, ListCreateAPIView):
 
 
 class ReviewUpdateDestroyAPIView(mixins.RatingMixin, UpdateAPIView, DestroyAPIView):
+    """
+    <div style='text-align: justify;'>
+        This API is used to get Three HTTP methods functionality like put, patch, and delete for ratting.
+        it is only for authenticated users and non-authenticated users can't access it.
+        <ul>
+            <li> It performs an update operation after sending a put request.</li>
+            <li> It performs a partial update operation after sending a patch request.</li>
+            <li> It performs a delete operation after sending a delete request.</li>
+        </ul>
+    </div>
+    """
 
     def get_object(self):
         """ A user can change their rating more than once. But only their own ratings. """
