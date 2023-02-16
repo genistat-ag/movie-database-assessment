@@ -1,4 +1,6 @@
 from django.db import models
+from django.dispatch import receiver
+from django.db.models.signals import post_save, post_delete
 
 
 class Movie(models.Model):
@@ -8,7 +10,7 @@ class Movie(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     creator = models.ForeignKey('auth.User', related_name='films', on_delete=models.CASCADE)
-    avg_rating = models.FloatField(null=True,blank=True)
+    avg_rating = models.FloatField(default=0.0)
 
     class Meta:
         ordering = ['-id']
@@ -30,3 +32,24 @@ class Rating(models.Model):
     score = models.IntegerField(choices=RATTING_CHOICES)
     created_at = models.DateTimeField(auto_now=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+
+@receiver(post_save, sender=Rating)
+def increase_avg_rating(sender, instance, created=False, **kwargs):
+    """
+      ** When a movie review is created the avg_rating field of the specific movie should get updated automatically.
+      ** The updated_at field will not change when update the avg_rating field of movie
+    """
+    if created:
+        instance.movie.avg_rating += 1
+        instance.movie.save(update_fields=['avg_rating'])
+
+
+@receiver(post_delete, sender=Rating)
+def decrease_update_avg_rating(sender, instance, **kwargs):
+    """
+      ** When a movie review is updated the avg_rating field of the specific movie should get updated automatically.
+      ** The updated_at field will not change when update the avg_rating field of movie
+    """
+    instance.movie.avg_rating -= 1
+    instance.movie.save(update_fields=['avg_rating'])
