@@ -1,4 +1,6 @@
 from rest_framework import serializers
+
+from .constants import INAPPROPRIATE
 from .models import Movie, Rating, Report
 from django.contrib.auth.models import User
 
@@ -9,6 +11,13 @@ class MovieSerializer(serializers.ModelSerializer):  # create class to serialize
     class Meta:
         model = Movie
         fields = ('id', 'title', 'genre', 'year', 'creator', 'avg_rating')
+
+
+class OwnMovieSerializer(MovieSerializer):
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data.update({'is_inappropriate': instance.reports.filter(movie=instance).exists()})
+        return data
 
 
 class ReportSerializer(serializers.ModelSerializer):  # create class to serializer model
