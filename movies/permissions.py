@@ -14,4 +14,9 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
             return True
 
         # Write permissions are only allowed to the creator of the movie
-        return obj.creator == request.user
+        if hasattr(obj, "creator"):
+            return obj.creator == request.user
+
+        # Write permissions are only allowed to the creator of the rating
+        if hasattr(obj, "reviewer"):
+            return obj.reviewer == request.user
