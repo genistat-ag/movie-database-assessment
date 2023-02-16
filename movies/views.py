@@ -1,4 +1,5 @@
-from rest_framework.generics import RetrieveUpdateDestroyAPIView, ListCreateAPIView, get_object_or_404
+from rest_framework.generics import RetrieveUpdateDestroyAPIView, ListCreateAPIView, get_object_or_404, UpdateAPIView, \
+    DestroyAPIView
 from django_filters import rest_framework as filters
 from .models import Movie,Rating
 from .serializers import MovieSerializer,ReviewSerializer
@@ -43,3 +44,12 @@ class ListCreateReviewAPIView(ListCreateAPIView):
     def perform_create(self, serializer):
         serializer.save(reviewer=self.request.user)
 
+
+class ReviewUpdateDestroyAPIView(UpdateAPIView, DestroyAPIView):
+    serializer_class = ReviewSerializer
+    queryset = Rating.objects.all()
+    permission_classes = (IsAuthenticated,)
+
+    def get_object(self):
+        """ A user can change their rating more than once. But only their own ratings. """
+        return get_object_or_404(Rating, reviewer=self.request.user, id=self.kwargs.get("pk"))
