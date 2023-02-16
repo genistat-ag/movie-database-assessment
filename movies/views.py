@@ -30,7 +30,7 @@ class ListOwnMovieView(APIView):
 
 class ListCreateMovieAPIView(ListCreateAPIView):
     serializer_class = MovieSerializer
-    queryset = Movie.objects.all()
+    queryset = Movie.objects.filter(visibility=True)
     pagination_class = CustomPagination
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = MovieFilter

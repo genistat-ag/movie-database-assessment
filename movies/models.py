@@ -5,6 +5,7 @@ class Movie(models.Model):
     title = models.CharField(max_length=255,unique=True)
     genre = models.CharField(max_length=255)
     year = models.IntegerField()
+    visibility=models.BooleanField(null=True,blank=True,default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     creator = models.ForeignKey('auth.User', related_name='films', on_delete=models.CASCADE)
