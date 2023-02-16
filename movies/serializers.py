@@ -1,11 +1,11 @@
 from rest_framework import serializers
-
-from .constants import INAPPROPRIATE
 from .models import Movie, Rating, Report
 from django.contrib.auth.models import User
 
 
-class MovieSerializer(serializers.ModelSerializer):  # create class to serializer model
+class MovieSerializer(serializers.ModelSerializer):
+    """ create class to serializer model movie """
+
     creator = serializers.ReadOnlyField(source='username')
 
     class Meta:
@@ -14,13 +14,17 @@ class MovieSerializer(serializers.ModelSerializer):  # create class to serialize
 
 
 class OwnMovieSerializer(MovieSerializer):
+    """ create class to serialize own movie data """
+
     def to_representation(self, instance):
         data = super().to_representation(instance)
         data.update({'is_inappropriate': instance.reports.filter(movie=instance).exists()})
         return data
 
 
-class ReportSerializer(serializers.ModelSerializer):  # create class to serializer model
+class ReportSerializer(serializers.ModelSerializer):
+    """ create class to serializer report model """
+
     user = serializers.ReadOnlyField(source='username')
 
     class Meta:
@@ -28,7 +32,9 @@ class ReportSerializer(serializers.ModelSerializer):  # create class to serializ
         fields = ('id', 'state', 'user', 'movie', 'description')
 
 
-class UserSerializer(serializers.ModelSerializer):  # create class to serializer user model
+class UserSerializer(serializers.ModelSerializer):
+    """ create class to serializer user models """
+
     movies = serializers.PrimaryKeyRelatedField(many=True, queryset=Movie.objects.all())
 
     class Meta:
@@ -37,9 +43,11 @@ class UserSerializer(serializers.ModelSerializer):  # create class to serializer
 
 
 class ReviewSerializer(serializers.ModelSerializer):
-    movie = serializers.PrimaryKeyRelatedField(many=False,queryset=Movie.objects.all())
+    """  create class to serializer ratting model """
+
+    movie = serializers.PrimaryKeyRelatedField(many=False, queryset=Movie.objects.all())
     reviewer = serializers.ReadOnlyField(source='username')
 
     class Meta:
         model = Rating
-        fields = ('id','movie','score','reviewer')
+        fields = ('id', 'movie', 'score', 'reviewer')

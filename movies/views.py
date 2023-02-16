@@ -13,6 +13,7 @@ from .serializers import OwnMovieSerializer
 
 class ListCreateMovieAPIView(mixins.MovieMixin, ListCreateAPIView):
     """ Here, authenticated users can see all movies for get request"""
+
     pagination_class = CustomPagination
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = MovieFilter
@@ -28,6 +29,7 @@ class ListCreateMovieAPIView(mixins.MovieMixin, ListCreateAPIView):
 
 class OwnMovieListView(mixins.MovieMixin, ListAPIView):
     """ Here, only authenticated users can see his/her own movies"""
+
     serializer_class = OwnMovieSerializer
 
     def get_queryset(self):

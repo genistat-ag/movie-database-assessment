@@ -7,9 +7,10 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, Spec
 
 # urls
 urlpatterns = [
-    path('api/v1/auth/', include('authentication.urls')),
-    path('api/v1/movies/', include('movies.urls')),
     path('admin/', admin.site.urls),
+
+    path('api/v1/auth/', include('authentication.urls')),  # include authentication app urls
+    path('api/v1/', include('movies.urls')),  # include movies app urls
 
     # for API docs
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
