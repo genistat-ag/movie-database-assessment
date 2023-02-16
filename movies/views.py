@@ -1,4 +1,4 @@
-from rest_framework.generics import RetrieveUpdateDestroyAPIView, ListCreateAPIView
+from rest_framework.generics import RetrieveUpdateDestroyAPIView, ListCreateAPIView, RetrieveUpdateAPIView
 from django_filters import rest_framework as filters
 from .models import Movie,Rating
 from .serializers import MovieSerializer,ReviewSerializer
@@ -21,6 +21,12 @@ class ListCreateMovieAPIView(ListCreateAPIView):
     def perform_create(self, serializer):
         # Assign the user who created the movie
         serializer.save(creator=self.request.user)
+
+
+class UpdateMovieAPIView(RetrieveUpdateAPIView):
+    serializer_class = MovieSerializer
+    queryset = Movie.objects.all()
+    permission_classes = (IsAuthenticated,)
 
 
 class RetrieveUpdateDestroyMovieAPIView(RetrieveUpdateDestroyAPIView):
