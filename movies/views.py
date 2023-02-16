@@ -1,31 +1,25 @@
 from rest_framework.generics import RetrieveUpdateDestroyAPIView, ListCreateAPIView, get_object_or_404, UpdateAPIView, \
     DestroyAPIView, CreateAPIView, ListAPIView
 from django_filters import rest_framework as filters
-from .models import Movie, Rating, Report
-from .serializers import MovieSerializer, ReviewSerializer, ReportSerializer
+from .models import Movie, Rating
 from .pagination import CustomPagination
 from .filters import MovieFilter
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.permissions import IsAuthenticated
+from movies import mixins
 
 
-class ListCreateMovieAPIView(ListCreateAPIView):
+class ListCreateMovieAPIView(ListCreateAPIView, mixins.MovieMixin):
     """ Here, authenticated users can see all movies for get request"""
-    serializer_class = MovieSerializer
-    queryset = Movie.objects.all()
     pagination_class = CustomPagination
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = MovieFilter
-    permission_classes = (IsAuthenticated,)
 
     def perform_create(self, serializer):
         # Assign the user who created the movie
         serializer.save(creator=self.request.user)
 
 
-class RetrieveUpdateDestroyMovieAPIView(RetrieveUpdateDestroyAPIView):
-    serializer_class = MovieSerializer
-    queryset = Movie.objects.all()
-    permission_classes = (IsAuthenticated,)
+class RetrieveUpdateDestroyMovieAPIView(RetrieveUpdateDestroyAPIView, mixins.MovieMixin):
 
     def get_object(self):
         """ A movie can only be updated by its creator. """
@@ -34,9 +28,7 @@ class RetrieveUpdateDestroyMovieAPIView(RetrieveUpdateDestroyAPIView):
         return super().get_object()
 
 
-class ReportCreateAPIView(CreateAPIView):
-    serializer_class = ReportSerializer
-    queryset = Report.objects.all()
+class ReportCreateAPIView(CreateAPIView, mixins.ReportMixin):
     permission_classes = (IsAuthenticated,)
 
     def perform_create(self, serializer):
@@ -44,24 +36,16 @@ class ReportCreateAPIView(CreateAPIView):
         serializer.save(user=self.request.user)
 
 
-class ReportListAPIView(ListAPIView):
-    serializer_class = ReportSerializer
-    queryset = Report.objects.all()
-    permission_classes = (IsAdminUser,)
+class ReportListAPIView(ListAPIView, mixins.ReportMixin):
+    pass
 
 
-class ReportUpdateAPIView(UpdateAPIView):
-    serializer_class = ReportSerializer
-    queryset = Report.objects.all()
-    permission_classes = (IsAdminUser,)
+class ReportUpdateAPIView(UpdateAPIView, mixins.ReportMixin):
+    pass
 
 
-class ListCreateReviewAPIView(ListCreateAPIView):
+class ListCreateReviewAPIView(ListCreateAPIView, mixins.RatingMixin):
     """ Only authenticated users can give ratings. """
-
-    serializer_class = ReviewSerializer
-    queryset = Rating.objects.all()
-    permission_classes = (IsAuthenticated,)
 
     def perform_create(self, serializer):
         """ Don't create more than one ratting for a single movie by same user"""
@@ -72,10 +56,7 @@ class ListCreateReviewAPIView(ListCreateAPIView):
             serializer.save(reviewer=self.request.user)
 
 
-class ReviewUpdateDestroyAPIView(UpdateAPIView, DestroyAPIView):
-    serializer_class = ReviewSerializer
-    queryset = Rating.objects.all()
-    permission_classes = (IsAuthenticated,)
+class ReviewUpdateDestroyAPIView(UpdateAPIView, DestroyAPIView, mixins.RatingMixin):
 
     def get_object(self):
         """ A user can change their rating more than once. But only their own ratings. """
