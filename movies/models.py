@@ -13,6 +13,9 @@ class Movie(models.Model):
     class Meta:
         ordering = ['-id']
 
+    def __str__(self):
+        return self.title
+
 
 class Rating(models.Model):
     movie = models.ForeignKey(Movie,related_name='movie',on_delete=models.CASCADE)
@@ -20,3 +23,7 @@ class Rating(models.Model):
     score = models.IntegerField()
     created_at = models.DateTimeField(auto_now=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+
+    def __str__(self):
+        return self.movie.title
