@@ -91,6 +91,15 @@ class ListCreateReportAPIView(ListCreateAPIView):
     queryset = Report.objects.all()
     permission_classes = (IsAuthenticated,)
 
+    def get_queryset(self):
+        queryData = Report.objects.all()
+        if self.request.user.is_superuser:
+            return queryData
+
+        else:
+            raise APIException("only super user can generate all report list")
+
+
     def perform_create(self, serializer):
-        serializer.save(reviewer=self.request.user)
+        serializer.save(reviewer=self.request.user,state="unresolved")
 

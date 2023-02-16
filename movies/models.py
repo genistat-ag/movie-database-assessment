@@ -26,7 +26,7 @@ class Movie(models.Model):
 
 class Report(models.Model):
     state_choice = [
-        # ("unresolved","unresolved"),
+        ("unresolved","unresolved"),
         ("Mark movie as inappropriate","Mark movie as inappropriate"),
         ("Reject report","Reject report"),
     ]
