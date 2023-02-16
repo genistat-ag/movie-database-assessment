@@ -16,6 +16,22 @@ class Movie(models.Model):
         ordering = ['-id']
 
 
+class Report(models.Model):
+
+    STATE_CHOICES = (
+        (1, "Unresolved"),
+        (2, "Mark movie as inappropriate"),
+        (3, "Reject report"),
+    )
+
+    movie = models.ForeignKey(Movie,related_name='reports', on_delete=models.CASCADE)
+    user = models.ForeignKey('auth.User', related_name='reports', on_delete=models.CASCADE)
+    state = models.PositiveSmallIntegerField(choices=STATE_CHOICES, default=1)
+    description = models.TextField(default='')
+    created_at = models.DateTimeField(auto_now=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
 class Rating(models.Model):
     """ A user can give a rating 1 to 5 for any specific movie """
 
@@ -53,3 +69,4 @@ def decrease_update_avg_rating(sender, instance, **kwargs):
     """
     instance.movie.avg_rating -= 1
     instance.movie.save(update_fields=['avg_rating'])
+

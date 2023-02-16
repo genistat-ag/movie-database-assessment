@@ -1,11 +1,11 @@
 from rest_framework.generics import RetrieveUpdateDestroyAPIView, ListCreateAPIView, get_object_or_404, UpdateAPIView, \
-    DestroyAPIView
+    DestroyAPIView, CreateAPIView, ListAPIView
 from django_filters import rest_framework as filters
-from .models import Movie,Rating
-from .serializers import MovieSerializer,ReviewSerializer
+from .models import Movie, Rating, Report
+from .serializers import MovieSerializer, ReviewSerializer, ReportSerializer
 from .pagination import CustomPagination
 from .filters import MovieFilter
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 
 
 class ListCreateMovieAPIView(ListCreateAPIView):
@@ -32,6 +32,28 @@ class RetrieveUpdateDestroyMovieAPIView(RetrieveUpdateDestroyAPIView):
         if self.request.method in ['PUT', 'PATCH']:
             return get_object_or_404(Movie, creator=self.request.user, id=self.kwargs.get("pk"))
         return super().get_object()
+
+
+class ReportCreateAPIView(CreateAPIView):
+    serializer_class = ReportSerializer
+    queryset = Report.objects.all()
+    permission_classes = (IsAuthenticated,)
+
+    def perform_create(self, serializer):
+        # Assign the user who created the report
+        serializer.save(user=self.request.user)
+
+
+class ReportListAPIView(ListAPIView):
+    serializer_class = ReportSerializer
+    queryset = Report.objects.all()
+    permission_classes = (IsAdminUser,)
+
+
+class ReportUpdateAPIView(UpdateAPIView):
+    serializer_class = ReportSerializer
+    queryset = Report.objects.all()
+    permission_classes = (IsAdminUser,)
 
 
 class ListCreateReviewAPIView(ListCreateAPIView):
