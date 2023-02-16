@@ -4,9 +4,8 @@ from .models import Movie,Rating
 from .serializers import MovieSerializer,ReviewSerializer
 from .pagination import CustomPagination
 from .filters import MovieFilter
+from .permissions import IsOwnerOrReadOnly
 from rest_framework.permissions import IsAuthenticated
-
-# Removes permissions from views
 
 
 class ListCreateMovieAPIView(ListCreateAPIView):
@@ -26,7 +25,11 @@ class ListCreateMovieAPIView(ListCreateAPIView):
 class RetrieveUpdateDestroyMovieAPIView(RetrieveUpdateDestroyAPIView):
     serializer_class = MovieSerializer
     queryset = Movie.objects.all()
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsOwnerOrReadOnly,)
+
+    def update(self, request, *args, **kwargs):
+        kwargs['partial'] = True
+        return super().update(request, *args, **kwargs)
 
 
 class ListCreateReviewAPIView(ListCreateAPIView):
