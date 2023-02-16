@@ -6,17 +6,15 @@ from .pagination import CustomPagination
 from .filters import MovieFilter
 from rest_framework.permissions import IsAuthenticated
 
-# Removes permissions from views
-
 
 class ListCreateMovieAPIView(ListCreateAPIView):
+    """ Here, authenticated users can see all movies """
     serializer_class = MovieSerializer
     queryset = Movie.objects.all()
     pagination_class = CustomPagination
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = MovieFilter
     permission_classes = (IsAuthenticated,)
-
 
     def perform_create(self, serializer):
         # Assign the user who created the movie

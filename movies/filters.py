@@ -10,6 +10,8 @@ class MovieFilter(filters.FilterSet):
     year__gt = filters.NumberFilter(field_name='year' )
     year__lt = filters.NumberFilter(field_name='year')
     creator__username = filters.CharFilter(lookup_expr='icontains')
+    # for only authenticated users can see their own movies
+    creator_id = filters.NumberFilter(field_name='creator_id')
 
     class Meta:
         model = Movie

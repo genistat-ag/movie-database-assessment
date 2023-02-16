@@ -106,6 +106,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+# User will be able to login via username or email and password
 AUTHENTICATION_BACKENDS = ["authentication.user_auth.EmailOrUsernameModelBackend"]
 ROOT_URLCONF = 'api_crud.urls'
 

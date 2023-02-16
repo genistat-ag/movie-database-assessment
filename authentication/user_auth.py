@@ -4,6 +4,8 @@ from django.db.models import Q
 
 
 class EmailOrUsernameModelBackend(ModelBackend):
+    """ User will be able to signin through username or email and password """
+
     def authenticate(self, request, username=None, password=None, **kwargs):
         UserModel = get_user_model()
         try:
