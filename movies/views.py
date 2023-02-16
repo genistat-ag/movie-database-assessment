@@ -59,6 +59,23 @@ class RetrieveUpdateDestroyMovieAPIView(RetrieveUpdateDestroyAPIView):
             else:
                 raise APIException("user only can update own created movie")
 
+class RetrieveUpdateDestroyRatingAPIView(RetrieveUpdateDestroyAPIView):
+    serializer_class = ReviewSerializer
+    queryset = Rating.objects.all()
+    permission_classes = (IsAuthenticated,)
+
+    def perform_update(self, serializer):
+        if Rating.objects.filter(id=serializer.data['id']).exists():
+            get_data = Rating.objects.get(id=serializer.data['id'])
+            if get_data.reviewer == self.request.user:
+                 serializer_data = ReviewSerializer(get_data,data=serializer.data)
+                 if serializer_data.is_valid():
+                    serializer_data.save()
+                 else:
+                    raise APIException(str(serializer_data.errors))
+            else:
+                raise APIException("user only can update own created movie")
+
 
 class ListCreateReviewAPIView(ListCreateAPIView):
     serializer_class = ReviewSerializer
