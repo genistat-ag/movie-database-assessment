@@ -9,6 +9,8 @@ make_inappropriate.short_description = "Mark as Inappropriate"
 
 def make_rejected(modeladmin, request, queryset):
     queryset.update(state='Mark as Rejected')
+    for data in queryset:
+        Movie.objects.filter(id=data.id).update(visibility=True)
 make_rejected.short_description = "Mark as Rejected"
 
 class ReportAdminView(admin.ModelAdmin):
