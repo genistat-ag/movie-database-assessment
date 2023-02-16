@@ -1,13 +1,17 @@
-from rest_framework.generics import RetrieveUpdateDestroyAPIView, ListCreateAPIView, RetrieveUpdateAPIView
+from rest_framework.generics import RetrieveUpdateDestroyAPIView, ListCreateAPIView, RetrieveUpdateAPIView, CreateAPIView
+
 from django_filters import rest_framework as filters
 from .models import Movie,Rating
 from .serializers import MovieSerializer,ReviewSerializer
 from .pagination import CustomPagination
 from .filters import MovieFilter
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, BasePermission
 
 # Removes permissions from views
 
+class IsCreator(BasePermission):
+    def has_object_permission(self, request, view, obj):
+        return obj.creator == request.user
 
 class ListCreateMovieAPIView(ListCreateAPIView):
     serializer_class = MovieSerializer
@@ -17,22 +21,20 @@ class ListCreateMovieAPIView(ListCreateAPIView):
     filterset_class = MovieFilter
     permission_classes = (IsAuthenticated,)
 
-
     def perform_create(self, serializer):
         # Assign the user who created the movie
         serializer.save(creator=self.request.user)
-
-
-class UpdateMovieAPIView(RetrieveUpdateAPIView):
-    serializer_class = MovieSerializer
-    queryset = Movie.objects.all()
-    permission_classes = (IsAuthenticated,)
 
 
 class RetrieveUpdateDestroyMovieAPIView(RetrieveUpdateDestroyAPIView):
     serializer_class = MovieSerializer
     queryset = Movie.objects.all()
     permission_classes = (IsAuthenticated,)
+
+    def get_permissions(self):
+        if self.request.method in ('PUT', 'PATCH', 'DELETE'):
+            return [IsAuthenticated(), IsCreator()]
+        return [IsAuthenticated()]
 
 
 class ListCreateReviewAPIView(ListCreateAPIView):
