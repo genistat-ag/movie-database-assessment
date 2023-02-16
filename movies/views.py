@@ -8,6 +8,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.exceptions import APIException
 # Removes permissions from views
 
 
@@ -45,6 +46,18 @@ class RetrieveUpdateDestroyMovieAPIView(RetrieveUpdateDestroyAPIView):
     serializer_class = MovieSerializer
     queryset = Movie.objects.all()
     permission_classes = (IsAuthenticated,)
+
+    def perform_update(self, serializer):
+        if Movie.objects.filter(id=serializer.data['id']).exists():
+            get_data = Movie.objects.get(id=serializer.data['id'])
+            if get_data.creator == self.request.user:
+                 serializer_data = MovieSerializer(get_data,data=serializer.data)
+                 if serializer_data.is_valid():
+                    serializer_data.save()
+                 else:
+                    raise APIException(str(serializer_data.errors))
+            else:
+                raise APIException("user only can update own created movie")
 
 
 class ListCreateReviewAPIView(ListCreateAPIView):
