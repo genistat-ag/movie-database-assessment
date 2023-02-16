@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Movie,Rating
+from .models import Movie,Rating,Report
 from django.contrib.auth.models import User
 
 class MovieSerializer(serializers.ModelSerializer):  # create class to serializer model
@@ -25,3 +25,11 @@ class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Rating
         fields = ('id','movie','score','reviewer')
+
+class ReportSerializer(serializers.ModelSerializer):
+    movie = serializers.PrimaryKeyRelatedField(many=False,queryset=Report.objects.all())
+    reviewer = serializers.ReadOnlyField(source='username')
+
+    class Meta:
+        model = Rating
+        fields = ('id','movie','report','reviewer')
