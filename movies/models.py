@@ -24,6 +24,15 @@ class Movie(models.Model):
         ordering = ['-id']
 
 
+class Report(models.Model):
+    movie = models.ForeignKey(Movie,related_name='report_movie',on_delete=models.CASCADE)
+    reviewer = models.ForeignKey('auth.User', related_name='report_reviewer', on_delete=models.CASCADE)
+    report = models.TextField(null=True,blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+
 class Rating(models.Model):
     movie = models.ForeignKey(Movie,related_name='movie',on_delete=models.CASCADE)
     reviewer = models.ForeignKey('auth.User', related_name='reviewer', on_delete=models.CASCADE)
