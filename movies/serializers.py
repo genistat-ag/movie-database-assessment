@@ -1,3 +1,4 @@
+from django.db.models import Avg
 from rest_framework import serializers
 from .models import Movie,Rating
 from django.contrib.auth.models import User
@@ -22,6 +23,16 @@ class ReviewSerializer(serializers.ModelSerializer):
     movie = serializers.PrimaryKeyRelatedField(many=False,queryset=Movie.objects.all())
     reviewer = serializers.ReadOnlyField(source='username')
     score = serializers.IntegerField(min_value=1, max_value=5)
+
+    def update(self, instance, validated_data):
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+        movie = instance.movie
+        score_avg = Rating.objects.filter(movie=movie).aggregate(Avg('score'))
+        movie.avg_rating = score_avg['score__avg']
+        movie.save(update_fields=['avg_rating'])
+        return instance
 
     class Meta:
         model = Rating
