@@ -42,7 +42,12 @@ class ListCreateReviewAPIView(ListCreateAPIView):
     permission_classes = (IsAuthenticated,)
 
     def perform_create(self, serializer):
-        serializer.save(reviewer=self.request.user)
+        """ Don't create more than one ratting for a single movie by same user"""
+        rating = Rating.objects.filter(reviewer=self.request.user, movie_id=self.request.data.get('movie'))
+        if rating.exists():
+            rating.update(score=self.request.data.get('score'))
+        else:
+            serializer.save(reviewer=self.request.user)
 
 
 class ReviewUpdateDestroyAPIView(UpdateAPIView, DestroyAPIView):
