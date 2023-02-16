@@ -15,8 +15,18 @@ class Movie(models.Model):
 
 
 class Rating(models.Model):
+    """ A user can give a rating 1 to 5 for any specific movie """
+
+    RATTING_CHOICES = (
+        (1, "ONE"),
+        (2, "TWO"),
+        (3, "THREE"),
+        (4, "FOUR"),
+        (5, "FIVE"),
+    )
+
     movie = models.ForeignKey(Movie,related_name='movie',on_delete=models.CASCADE)
     reviewer = models.ForeignKey('auth.User', related_name='reviewer', on_delete=models.CASCADE)
-    score = models.IntegerField()
+    score = models.IntegerField(choices=RATTING_CHOICES)
     created_at = models.DateTimeField(auto_now=True)
     updated_at = models.DateTimeField(auto_now=True)

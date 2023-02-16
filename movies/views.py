@@ -34,6 +34,8 @@ class RetrieveUpdateDestroyMovieAPIView(RetrieveUpdateDestroyAPIView):
 
 
 class ListCreateReviewAPIView(ListCreateAPIView):
+    """ Only authenticated users can give ratings. """
+
     serializer_class = ReviewSerializer
     queryset = Rating.objects.all()
     permission_classes = (IsAuthenticated,)
