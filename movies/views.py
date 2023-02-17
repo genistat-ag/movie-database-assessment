@@ -72,12 +72,11 @@ class RetrieveUpdateDestroyReviewAPIView(RetrieveUpdateDestroyAPIView):
     serializer_class = ReviewSerializer
     queryset = Rating.objects.all()
     permission_classes = (IsAuthenticated, IsCreatorOrAuthenticatedReadOnly)
-    lookup_field = 'movie__id'  # Use 'movie__id' as the lookup field
+    lookup_field = 'movie_id'
 
     def get_queryset(self):
-        # Filter the queryset to include only the Rating instances for the given movie_id
         queryset = super().get_queryset()
-        return queryset.filter(movie__id=self.kwargs['movie_id'])
+        return queryset.filter(movie__id=self.kwargs['movie_id'], reviewer_id=self.request.user)
 
 
 class ListCreateMovieReportAPIView(ListCreateAPIView):

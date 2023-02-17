@@ -11,6 +11,27 @@ Email: su@gmail.com
 Password: su
 ```
 
+Other User Credentials: 
+```
+{
+    "first_name":"test",
+    "last_name":"test",
+    "username":"test",
+    "password":"Test!1234",
+    "password2":"Test!1234",
+    "email":"test@gmail.com"
+}
+{
+    "first_name":"test1",
+    "last_name":"test1",
+    "username":"test1",
+    "password":"Test1!1234",
+    "password2":"Test1!1234",
+    "email":"test1@gmail.com"
+}
+
+```
+
 # System Description and Use Cases(Implemented):
 
 ## Authentication
@@ -74,7 +95,8 @@ Password: su
 
     ```
 3. User can refresh and generate and new access token 
-***Request***
+
+- ***Request***
 ```
    URL: localhost:8000/api/v1/auth/token/refresh/
    Method: POST
@@ -105,9 +127,9 @@ Password: su
    Bearer Token: {{Access Token}}
    PayLoad: 
    {
-       "title": "Interstellar 2",
-       "genre": "Sci-fi/Adventuree",
-       "year": 2014
+       "title": "Movie 1",
+       "genre": "Genre 1",
+       "year": 2010
    }
 ```
 
@@ -115,10 +137,10 @@ Password: su
 ```
    Status Code: 201
    {
-       "id": 4,
-       "title": "Interstellar 3",
-       "genre": "Sci-fi/Adventuree",
-       "year": 2014,
+       "id": 6,
+       "title": "Movie 1",
+       "genre": "Genre 1",
+       "year": 2010,
        "creator": "su",
        "avg_rating": null
    }
@@ -136,40 +158,56 @@ Password: su
 - **Response**
 ```
    Status Code: 200
-   [
-       {
-           "id": 4,
-           "title": "Interstellar 3",
-           "genre": "Sci-fi/Adventuree",
-           "year": 2014,
-           "creator": "su",
-           "avg_rating": null
-       },
-       {
-           "id": 3,
-           "title": "Interstellar 2",
-           "genre": "Sci-fi/Adventuree",
-           "year": 2014,
-           "creator": "su",
-           "avg_rating": null
-       },
-       {
-           "id": 2,
-           "title": "Interstellar",
-           "genre": "Sci-fi/Adventuree",
-           "year": 2014,
-           "creator": "mahin",
-           "avg_rating": 2.25
-       },
-       {
-           "id": 1,
-           "title": "Inceptionn",
-           "genre": "Action/Sci-fi",
-           "year": 2010,
-           "creator": "mahin",
-           "avg_rating": 8.8
-       }
-   ]
+[
+    {
+        "id": 11,
+        "title": "Movie 6",
+        "genre": "Genre 6",
+        "year": 2010,
+        "creator": "test1",
+        "avg_rating": null
+    },
+    {
+        "id": 10,
+        "title": "Movie 5",
+        "genre": "Genre 5",
+        "year": 2010,
+        "creator": "test1",
+        "avg_rating": null
+    },
+    {
+        "id": 9,
+        "title": "Movie 4",
+        "genre": "Genre 4",
+        "year": 2010,
+        "creator": "test",
+        "avg_rating": null
+    },
+    {
+        "id": 8,
+        "title": "Movie 3",
+        "genre": "Genre 3",
+        "year": 2010,
+        "creator": "test",
+        "avg_rating": null
+    },
+    {
+        "id": 7,
+        "title": "Movie 2",
+        "genre": "Genre 2",
+        "year": 2010,
+        "creator": "su",
+        "avg_rating": null
+    },
+    {
+        "id": 6,
+        "title": "Movie 1",
+        "genre": "Genre 1",
+        "year": 2010,
+        "creator": "su",
+        "avg_rating": null
+    }
+]
 ```
 
 
@@ -177,7 +215,7 @@ Password: su
 
 - **Request**
 ```
-   URL: localhost:8000/api/v1/movies/2
+   URL: localhost:8000/api/v1/movies/{{moviee_id}}/
    Method: GET
    Bearer Token: {{Access Token}}
    Payload: Null
@@ -185,14 +223,14 @@ Password: su
 - **Response**
 ```
    Status Code: 200
-   {
-       "id": 2,
-       "title": "Interstellar",
-       "genre": "Sci-fi/Adventuree",
-       "year": 2014,
-       "creator": "mahin",
-       "avg_rating": 2.25
-   }
+    {
+        "id": 6,
+        "title": "Movie 1",
+        "genre": "Genre 1",
+        "year": 2010,
+        "creator": "su",
+        "avg_rating": null
+    }
 ```
 
 4. Only Authenticated and creator user can update movie:
