@@ -23,6 +23,19 @@ class ListCreateMovieAPIView(ListCreateAPIView):
     filterset_class = MovieFilter
     permission_classes = (IsAuthenticated,)
 
+    def get_queryset(self):
+        user = self.request.user
+        queryset = Movie.objects.filter(is_inappropriate=False)
+
+        # Show creator's is_inappropriate=True movies
+        if user.is_authenticated:
+            creator_movies = Movie.objects.filter(creator=user, is_inappropriate=True)
+            queryset = creator_movies | queryset
+
+        if user.is_superuser:
+            queryset = Movie.objects.all()
+
+        return queryset
 
     def perform_create(self, serializer):
         # Assign the user who created the movie
