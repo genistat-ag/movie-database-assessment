@@ -1,5 +1,6 @@
 from rest_framework import permissions
 from rest_framework.exceptions import PermissionDenied
+from rest_framework.permissions import BasePermission
 
 
 class IsOwnerOrReadOnly(permissions.BasePermission):
@@ -15,3 +16,9 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
 
         # Write permissions are only allowed to the creator of the movie
         return obj.creator == request.user
+
+
+
+class IsSuperAdmin(BasePermission):
+    def has_permission(self, request, view):
+        return request.user.is_superuser
