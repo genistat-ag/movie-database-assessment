@@ -1,6 +1,6 @@
 from django.db.models import Avg
 from rest_framework import serializers
-from .models import Movie, Rating
+from .models import Movie, Rating, Report
 from django.contrib.auth.models import User
 
 
@@ -9,7 +9,7 @@ class MovieSerializer(serializers.ModelSerializer):  # create class to serialize
 
     class Meta:
         model = Movie
-        fields = ('id', 'title', 'genre', 'year', 'creator')
+        fields = ('id', 'title', 'genre', 'year', 'creator', 'is_inappropriate')
 
 
 class MovieDetailsSerializer(serializers.ModelSerializer):  # create class to serializer model
@@ -18,7 +18,6 @@ class MovieDetailsSerializer(serializers.ModelSerializer):  # create class to se
     class Meta:
         model = Movie
         fields = ('id', 'title', 'genre', 'year', 'creator', 'avg_rating')
-
 
 
 class UserSerializer(serializers.ModelSerializer):  # create class to serializer user model
@@ -60,3 +59,21 @@ class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Rating
         fields = ('id', 'movie', 'score', 'reviewer')
+
+
+class ReportSerializer(serializers.ModelSerializer):
+    movie = serializers.PrimaryKeyRelatedField(many=False, queryset=Movie.objects.all())
+    reporter = serializers.ReadOnlyField(source='username')
+
+    def create(self, validated_data):
+        request = self.context['request']
+        user = request.user
+        if Report.objects.filter(movie=validated_data.get('movie'), reporter=user).exists():
+            raise serializers.ValidationError({"detail": "You have already created reported for this movie"})
+        report = Report.objects.create(**validated_data)
+
+        return report
+
+    class Meta:
+        model = Report
+        fields = ['id', 'movie', 'reporter', 'state']

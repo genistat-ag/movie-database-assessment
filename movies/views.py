@@ -1,10 +1,12 @@
+from rest_framework import viewsets, status
+from rest_framework.decorators import action
 from rest_framework.generics import RetrieveUpdateDestroyAPIView, ListCreateAPIView
 from django_filters import rest_framework as filters
 from rest_framework.response import Response
 
-from .models import Movie, Rating
-from .permissions import IsOwnerOrReadOnly
-from .serializers import MovieSerializer, ReviewSerializer, MovieDetailsSerializer
+from .models import Movie, Rating, Report, State
+from .permissions import IsOwnerOrReadOnly, HasMoviePermission
+from .serializers import MovieSerializer, ReviewSerializer, MovieDetailsSerializer, ReportSerializer
 from .pagination import CustomPagination
 from .filters import MovieFilter
 from rest_framework.permissions import IsAuthenticated
@@ -20,6 +22,7 @@ class ListCreateMovieAPIView(ListCreateAPIView):
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = MovieFilter
     permission_classes = (IsAuthenticated,)
+
 
     def perform_create(self, serializer):
         # Assign the user who created the movie
@@ -50,3 +53,18 @@ class RetrieveUpdateDestroyReviewAPIView(RetrieveUpdateDestroyAPIView):
     serializer_class = ReviewSerializer
     queryset = Rating.objects.all()
     permission_classes = (IsAuthenticated, IsOwnerOrReadOnly,)
+
+
+class ReportViewSet(viewsets.ModelViewSet):
+    serializer_class = ReportSerializer
+    queryset = Report.objects.all()
+    http_method_names = ['get', 'post', 'patch']
+    permission_classes = (IsAuthenticated, HasMoviePermission,)
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_superuser:
+            return Report.objects.all()
+        else:
+            return Report.objects.filter(reporter=user)
+
