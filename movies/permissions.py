@@ -32,3 +32,19 @@ class IsAuthenticatedAndReviewer(permissions.BasePermission):
 
         # Write permissions are only allowed to the creator of the movie
         return obj.reviewer == request.user
+
+
+class IsSuperuser(permissions.BasePermission):
+    """ Superuser's permission """
+    def has_permission(self, request, view):
+        return request.user.is_authenticated and request.user.is_superuser
+
+
+class IsSuperuserOrAuthenticatedForGetAndPost(permissions.BasePermission):
+    """
+    Superuser has GET permission, Rest has POST perssion
+    """
+    def has_permission(self, request, view):
+        if request.method == 'POST' and request.user.is_authenticated:
+            return True
+        return bool(request.method == 'GET' and request.user.is_superuser)
