@@ -57,6 +57,7 @@ class ListCreateReviewAPIView(ListCreateAPIView):
     serializer_class = ReviewSerializer
     queryset = Rating.objects.all()
     permission_classes = (IsAuthenticated,)
+    pagination_class = CustomPagination
 
     def perform_create(self, serializer):
         serializer.save(reviewer=self.request.user)
@@ -73,6 +74,7 @@ class ReportViewSet(viewsets.ModelViewSet):
     queryset = Report.objects.all()
     http_method_names = ['get', 'post', 'patch']
     permission_classes = (IsAuthenticated, HasMoviePermission,)
+    pagination_class = CustomPagination
 
     def get_queryset(self):
         user = self.request.user
