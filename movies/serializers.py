@@ -25,3 +25,11 @@ class MovieSerializer(serializers.ModelSerializer):  # create class to serialize
     class Meta:
         model = Movie
         fields = ('id', 'title', 'genre', 'year', 'creator',  'avg_rating')
+
+class MovieReportSerializer(serializers.ModelSerializer):
+    creator = serializers.ReadOnlyField(source='creator.username')
+    reviews = ReviewSerializer(read_only=True, many=True, source='movie')
+
+    class Meta:
+        model = Movie
+        fields = ('id', 'title', 'genre', 'year', 'creator',  'avg_rating', 'reviews')

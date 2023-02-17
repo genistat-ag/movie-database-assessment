@@ -1,7 +1,7 @@
 from rest_framework.generics import RetrieveUpdateDestroyAPIView, ListCreateAPIView
 from django_filters import rest_framework as filters
 from .models import Movie,Rating
-from .serializers import MovieSerializer,ReviewSerializer
+from .serializers import MovieSerializer,ReviewSerializer, MovieReportSerializer
 from .pagination import CustomPagination
 from .filters import MovieFilter
 from rest_framework.permissions import IsAuthenticated
@@ -78,4 +78,11 @@ class RetrieveUpdateDestroyReviewAPIView(RetrieveUpdateDestroyAPIView):
         # Filter the queryset to include only the Rating instances for the given movie_id
         queryset = super().get_queryset()
         return queryset.filter(movie__id=self.kwargs['movie_id'])
+
+
+class ListCreateMovieReportAPIView(ListCreateAPIView):
+    serializer_class = MovieReportSerializer
+    queryset = Movie.objects.all()
+    pagination_class = CustomPagination
+    permission_classes = (IsAuthenticated,)
 

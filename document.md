@@ -357,6 +357,47 @@ Password: su
 }
 ```
 
+9. To see movie report by an authenticated user:
+
+- **Request**
+```
+   URL: localhost:8000/api/v1/movies/report/
+   Method: GET
+   Bearer Token: {{Access Token}}
+   Payload: Null
+```
+- **Response**
+```
+[
+    {
+        "id": 5,
+        "title": "Interstelleraaaaa",
+        "genre": "Sci-fi/Adventuree",
+        "year": 2016,
+        "creator": "su",
+        "avg_rating": 3.0,
+        "reviews": [
+            {
+                "id": 23,
+                "movie": 5,
+                "score": 3,
+                "reviewer": "test"
+            }
+        ]
+    }
+]
+
+```
+
+
+
+### Prepared By
+```
+Name: Md Mokhlesur Rahman.
+Email: mokhlesurr031@gmail.com
+Contact: 01932027399
+```
+
 
 
 
