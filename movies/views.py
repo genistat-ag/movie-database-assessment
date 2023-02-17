@@ -21,7 +21,7 @@ class IsReviewer(BasePermission):
 
 class ListCreateMovieAPIView(ListCreateAPIView):
     serializer_class = MovieSerializer
-    queryset = Movie.objects.all()
+    queryset = Movie.objects.filter(deleted=True)
     pagination_class = CustomPagination
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = MovieFilter

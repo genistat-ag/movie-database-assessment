@@ -11,6 +11,7 @@ class Movie(models.Model):
     creator = models.ForeignKey('auth.User', related_name='films', on_delete=models.CASCADE)
     avg_rating = models.FloatField(null=True,blank=True)
     inappropriate_status = models.BooleanField(default=False)
+    deleted=models.BooleanField(default=True)
 
     def __str__(self):
         return self.title
@@ -31,7 +32,7 @@ class Report(models.Model):
     state_choice = [
         ("unresolved","Unresolved"),
         ("inappropriate","Inappropriate"),
-        ("Reject","Reject"),
+        ("reject","Reject"),
     ]
     movie = models.ForeignKey(Movie,related_name='report_movie',on_delete=models.CASCADE)
     reviewer = models.ForeignKey('auth.User', related_name='report_reviewer', on_delete=models.CASCADE)
