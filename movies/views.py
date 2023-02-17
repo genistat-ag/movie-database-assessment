@@ -68,3 +68,38 @@ class ReportViewSet(viewsets.ModelViewSet):
         else:
             return Report.objects.filter(reporter=user)
 
+    def perform_create(self, serializer):
+        serializer.save(reporter=self.request.user)
+
+    @action(detail=True, methods=['patch'], url_path='mark-inappropriate')
+    def mark_as_inappropriate(self, request, pk=None):
+        report = self.get_object()
+        if report.state != State.UNRESOLVED:
+            return Response({"detail": "Report has already been resolved"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # set_state the selected report to MARK_AS_INAPPROPRIATE state
+        report.set_state(State.MARK_AS_INAPPROPRIATE)
+        report.save()
+
+        # Mark movie as inappropriate and hide it from all users
+        movie = report.movie
+        movie.is_inappropriate = True
+        movie.save()
+
+        return Response(self.get_serializer(report).data)
+
+    @action(detail=True, methods=['patch'], url_path='reject')
+    def reject_report(self, request, pk=None):
+        report = self.get_object()
+        if report.state != State.UNRESOLVED:
+            return Response({"detail": "Report has already been resolved"}, status=status.HTTP_400_BAD_REQUEST)
+        report.set_state(State.REJECT_REPORT)
+        return Response(self.get_serializer(report).data)
+
+    @action(detail=True, methods=['patch'], url_path='revert')
+    def revert_report(self, request, pk=None):
+        report = self.get_object()
+        if report.state == State.UNRESOLVED:
+            return Response({"detail": "Report hasn't been resolve yet"}, status=status.HTTP_400_BAD_REQUEST)
+        report.set_state(State.UNRESOLVED)
+        return Response(self.get_serializer(report).data)
