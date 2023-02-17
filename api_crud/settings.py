@@ -45,6 +45,8 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
 }
 
+AUTHENTICATION_BACKENDS = ["authentication.auth.EmailOrUsernameAuth"]
+
 # Application definition
 
 INSTALLED_APPS = [
