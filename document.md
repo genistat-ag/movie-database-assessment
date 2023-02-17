@@ -195,7 +195,41 @@ Password: su
    }
 ```
 
-5.Only Admin User can create review list
+4. Only Authenticated and creator user can update movie:
+
+- **Request**
+```
+   URL: localhost:8000/api/v1/movies/{{movie_id}}/
+   Method: PUT
+   Bearer Token: {{Access Token}}
+   Payload: {
+       "title": "Interstelleraaaaa",
+       "genre": "Sci-fi/Adventuree",
+       "year": 2014,
+       "creator": "su",
+       "avg_rating": null
+   }
+```
+- **Response**
+```
+   Status Code: 200
+   {
+       "id": 5,
+       "title": "Interstelleraaaaa",
+       "genre": "Sci-fi/Adventuree",
+       "year": 2014,
+       "creator": "su",
+       "avg_rating": null
+   }
+   
+   If other authenticated user tries to perform update
+   Status Code: 403
+   {
+       "detail": "You do not have permission to perform this action."
+   }
+```
+
+5.Only Authenticated User can create review 
 
 - **Request**
 ```
@@ -233,7 +267,9 @@ Password: su
    }
 ```
 
-6. Only Admin User can see review list
+
+
+6. Only Authenticated User can see review list
 
 - **Request**
 ```
@@ -273,6 +309,52 @@ Password: su
        }
    ]
 
+```
+
+7. Only Authenticated and Creator User can update/delete review
+
+- **Request**
+```
+   URL: localhost:8000/api/v1/movies/review/{{movie_id}}/
+   Method: PUT/DELETE
+   Bearer Token: {{Access Token}}
+   Payload: [IF UPDATE]
+   {
+    "movie": 5,
+    "score": 3
+   }
+
+```
+- **Response**
+```
+   Status Code: 200
+   {
+    "movie": 5,
+    "score": 3
+   }
+
+```
+
+8. Authenticated User can See review details
+
+- **Request**
+```
+   URL: localhost:8000/api/v1/movies/review/{{movie_id}}/
+   Method: GET
+   Bearer Token: {{Access Token}}
+   Payload: Null
+
+```
+- **Response**
+```
+{
+    "id": 5,
+    "title": "Interstelleraaaaa",
+    "genre": "Sci-fi/Adventuree",
+    "year": 2016,
+    "creator": "su",
+    "avg_rating": 3.0
+}
 ```
 
 
