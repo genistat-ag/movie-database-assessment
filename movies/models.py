@@ -33,7 +33,7 @@ class State(models.TextChoices):
 class Report(models.Model):
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
     reporter = models.ForeignKey('auth.User', related_name="reporter", on_delete=models.CASCADE)
-    state = models.CharField(choices=State.choices, default=State.UNRESOLVED)
+    state = models.CharField(max_length=100, choices=State.choices, default=State.UNRESOLVED)
 
     def mark_as_inappropriate(self):
         self.movie.is_inappropriate = True
