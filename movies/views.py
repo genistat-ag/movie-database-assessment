@@ -7,6 +7,7 @@ from .filters import MovieFilter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import ValidationError
 from django.db.models import Sum
+from rest_framework.permissions import BasePermission, SAFE_METHODS
 
 class ListCreateMovieAPIView(ListCreateAPIView):
     serializer_class = MovieSerializer
@@ -22,10 +23,19 @@ class ListCreateMovieAPIView(ListCreateAPIView):
         serializer.save(creator=self.request.user)
 
 
+class IsCreatorOrAuthenticatedReadOnly(BasePermission):
+    def has_object_permission(self, request, view, obj):
+        # Check if the request method is a safe method (i.e., GET, HEAD, or OPTIONS)
+        if request.method in SAFE_METHODS:
+            # Allow authenticated users to read the object
+            return True
+        # Check if the creator of the object is the same as the user making the request
+        return obj.creator == request.user
+
 class RetrieveUpdateDestroyMovieAPIView(RetrieveUpdateDestroyAPIView):
     serializer_class = MovieSerializer
     queryset = Movie.objects.all()
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, IsCreatorOrAuthenticatedReadOnly)
 
 
 class ListCreateReviewAPIView(ListCreateAPIView):
@@ -57,4 +67,15 @@ class ListCreateReviewAPIView(ListCreateAPIView):
         movie_id.avg_rating = avg_rating
         movie_id.save()
 
+
+class RetrieveUpdateDestroyReviewAPIView(RetrieveUpdateDestroyAPIView):
+    serializer_class = ReviewSerializer
+    queryset = Rating.objects.all()
+    permission_classes = (IsAuthenticated, IsCreatorOrAuthenticatedReadOnly)
+    lookup_field = 'movie__id'  # Use 'movie__id' as the lookup field
+
+    def get_queryset(self):
+        # Filter the queryset to include only the Rating instances for the given movie_id
+        queryset = super().get_queryset()
+        return queryset.filter(movie__id=self.kwargs['movie_id'])
 
