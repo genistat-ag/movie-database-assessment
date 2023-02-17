@@ -32,6 +32,17 @@ class ReviewSerializer(serializers.ModelSerializer):
         model = Rating
         fields = ('id','movie','score','reviewer')
     
+    def validate(self, data):
+        # Get the user and movie for this review
+        user = self.context['request'].user
+        movie = data['movie']
+
+        # Check if the user has already reviewed this movie
+        if Rating.objects.filter(movie=movie, reviewer=user).exists():
+            raise serializers.ValidationError('You have already reviewed this movie')
+
+        return data
+    
     def validate_score(self, value):
         if value < 1 or value > 5:
             raise serializers.ValidationError("Score must be between 1 and 5.")

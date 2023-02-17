@@ -54,6 +54,12 @@ class ListCreateReviewAPIView(ListCreateAPIView):
         movie = Movie.objects.get(id=movie_id)
         movie.avg_rating = Rating.objects.filter(movie=movie).aggregate(avg_rating=Avg('score'))['avg_rating']
         movie.save()
+    
+    def get_object(self):
+        obj = super().get_object()
+        if self.request.method in ('PUT', 'PATCH', 'DELETE') and obj.reviewer != self.request.user:
+            self.permission_denied(self.request, message='You cannot update another user\'s review')
+        return obj
 
 
 class RetrieveUpdateReviewAPIView(RetrieveUpdateAPIView):
