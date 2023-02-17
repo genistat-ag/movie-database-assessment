@@ -5,13 +5,8 @@ from .serializers import MovieSerializer,ReviewSerializer
 from .pagination import CustomPagination
 from .filters import MovieFilter
 from rest_framework.permissions import IsAuthenticated
-from rest_framework import status
-from django.http import JsonResponse
 from rest_framework.exceptions import ValidationError
 from django.db.models import Sum
-
-# Removes permissions from views
-
 
 class ListCreateMovieAPIView(ListCreateAPIView):
     serializer_class = MovieSerializer
