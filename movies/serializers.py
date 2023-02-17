@@ -1,12 +1,12 @@
 from rest_framework import serializers
-from .models import Movie,Rating
+from .models import Movie, Rating
 from django.contrib.auth.models import User
 
 from django.db.models import Avg
 
 class MovieSerializer(serializers.ModelSerializer):  # create class to serializer model
     creator = serializers.ReadOnlyField(source='username')
-    avg_rating = serializers.SerializerMethodField()
+    avg_rating = serializers.SerializerMethodField() # avg_rating serializer
 
     class Meta:
         model = Movie

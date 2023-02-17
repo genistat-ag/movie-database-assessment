@@ -10,6 +10,7 @@ class Movie(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     creator = models.ForeignKey('auth.User', related_name='films', on_delete=models.CASCADE)
     avg_rating = models.FloatField(null=True,blank=True)
+    inappropriate_status = models.BooleanField(default=False)
 
     def __str__(self):
         return self.title
@@ -22,5 +23,5 @@ class Rating(models.Model):
     movie = models.ForeignKey(Movie,related_name='movie',on_delete=models.CASCADE)
     reviewer = models.ForeignKey('auth.User', related_name='reviewer', on_delete=models.CASCADE)
     score = models.IntegerField()
-    created_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

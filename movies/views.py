@@ -1,12 +1,13 @@
 from rest_framework.generics import RetrieveUpdateDestroyAPIView, ListCreateAPIView, RetrieveUpdateAPIView, CreateAPIView
 from django_filters import rest_framework as filters
-from .models import Movie,Rating
+from .models import Movie, Rating
 from .serializers import MovieSerializer,ReviewSerializer
 from .pagination import CustomPagination
 from .filters import MovieFilter
 from rest_framework.permissions import IsAuthenticated, BasePermission
 
 from django.db.models import Avg
+
 
 # Removes permissions from views
 

@@ -59,7 +59,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_filters',
     'authentication',
-    'movies' #bug
+    'movies', #bug
+    'drf_yasg', #swagger documentation
 
 ]
 
