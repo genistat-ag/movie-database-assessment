@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Movie, Rating
+from .models import Movie, Rating, Report
 from django.contrib.auth.models import User
 
 from django.db.models import Avg
@@ -47,3 +47,12 @@ class ReviewSerializer(serializers.ModelSerializer):
         if value < 1 or value > 5:
             raise serializers.ValidationError("Score must be between 1 and 5.")
         return value
+
+
+class ReportSerializer(serializers.ModelSerializer):
+    movie = serializers.PrimaryKeyRelatedField(many=False,queryset=Movie.objects.all())
+    reviewer = serializers.ReadOnlyField(source='username')
+
+    class Meta:
+        model = Report
+        fields = ('id','movie','reviewer')

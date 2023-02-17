@@ -1,7 +1,7 @@
 from rest_framework.generics import RetrieveUpdateDestroyAPIView, ListCreateAPIView, RetrieveUpdateAPIView, CreateAPIView
 from django_filters import rest_framework as filters
-from .models import Movie, Rating
-from .serializers import MovieSerializer,ReviewSerializer
+from .models import Movie, Rating, Report
+from .serializers import MovieSerializer,ReviewSerializer, ReportSerializer
 from .pagination import CustomPagination
 from .filters import MovieFilter
 from rest_framework.permissions import IsAuthenticated, BasePermission
@@ -80,3 +80,19 @@ class RetrieveUpdateReviewAPIView(RetrieveUpdateAPIView):
         movie = Movie.objects.get(id=movie_id)
         movie.avg_rating = Rating.objects.filter(movie=movie).aggregate(avg_rating=Avg('score'))['avg_rating']
         movie.save()
+
+
+class ListCreateReportAPIView(ListCreateAPIView):
+    serializer_class = ReportSerializer
+    queryset = Report.objects.all()
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+            data = Report.objects.all()
+            if self.request.user.is_superuser:
+                return data
+            else:
+                raise APIException("You Dont Have permission to view this report")
+
+    def perform_create(self, serializer):
+        serializer.save(reviewer=self.request.user,status="unresolved")
