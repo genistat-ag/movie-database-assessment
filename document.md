@@ -44,13 +44,14 @@ Password: su
     
     ```
 
-    - 
+
 2. Only Admin User can register new User.
 
    - **Request**
    ```
    URL: localhost:8000/api/v1/auth/register/
    Method: POST
+   Bearer Token: {{Access Token}}
    Payload:
     {
         "first_name":"test",
@@ -77,6 +78,7 @@ Password: su
 ```
    URL: localhost:8000/api/v1/auth/token/refresh/
    Method: POST
+   Bearer Token: {{Access Token}}
    Payload:
    {
        "refresh": {{Existing Refresh Token}}
@@ -100,6 +102,7 @@ Password: su
 ```
    URL: localhost:8000/api/v1/movies/
    Method: POST
+   Bearer Token: {{Access Token}}
    PayLoad: 
    {
        "title": "Interstellar 2",
@@ -127,6 +130,7 @@ Password: su
 ```
    URL: localhost:8000/api/v1/movies/ 
    Method: GET
+   Bearer Token: {{Access Token}}
    Payload: Null
 ```
 - **Response**
@@ -175,6 +179,7 @@ Password: su
 ```
    URL: localhost:8000/api/v1/movies/2
    Method: GET
+   Bearer Token: {{Access Token}}
    Payload: Null
 ```
 - **Response**
@@ -196,6 +201,7 @@ Password: su
 ```
    URL: localhost:8000/api/v1/movies/review/
    Method: POST
+   Bearer Token: {{Access Token}}
    Payload: 
    {
        "movie": 1,
@@ -233,6 +239,7 @@ Password: su
 ```
    URL: localhost:8000/api/v1/movies/review/
    Method: GET
+   Bearer Token: {{Access Token}}
    Payload: Null
 
 ```
