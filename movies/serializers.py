@@ -17,7 +17,7 @@ class MovieDetailsSerializer(serializers.ModelSerializer):  # create class to se
 
     class Meta:
         model = Movie
-        fields = ('id', 'title', 'genre', 'year', 'creator', 'avg_rating')
+        fields = ('id', 'title', 'genre', 'year', 'creator', 'avg_rating', 'is_inappropriate')
 
 
 class UserSerializer(serializers.ModelSerializer):  # create class to serializer user model
