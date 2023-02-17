@@ -6,6 +6,8 @@
 - Django 3.1
 - Django REST Framework
 
+## Please Read Documentation for change logs: [Changes by Mokhlesur](document.md)
+
 ## Installation
 After you cloned the repository, you want to create a virtual environment, so you have a clean python installation.
 You can do this by running the command
