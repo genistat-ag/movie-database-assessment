@@ -22,18 +22,17 @@ class RegisterSerializer(serializers.ModelSerializer):
         model = User
         fields = ('username', 'password', 'password2', 'email', 'first_name', 'last_name')
 
-    def validate(self, attrs):
-        if attrs['password'] == attrs['password2']:
-            raise serializers.ValidationError({"password": "Password fields didn't match."})
-        if attrs['password'] != attrs['password2']:
-            raise serializers.ValidationError({"password": "Password fields didn't match."})
-        return attrs
+    # password validation & password2 not in serializer bug fix
 
-    def create(self, validated_data):
-        del validated_data['password2']
-        user = User.objects.create(**validated_data)
+    def save(self):
+        if self.validated_data['password'] != self.validated_data['password2']:
+            raise serializers.ValidationError({"password": "Password fields didn't match."})
 
-        user.set_password(validated_data['password'])
+        user = User(username=self.validated_data['username'],
+                    email=self.validated_data['email'],
+                    first_name=self.validated_data['first_name'],
+                    last_name=self.validated_data['last_name'],
+                    )
+        user.set_password(self.validated_data['password'])
         user.save()
-
         return user
