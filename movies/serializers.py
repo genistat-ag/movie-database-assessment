@@ -11,6 +11,15 @@ class MovieSerializer(serializers.ModelSerializer):  # create class to serialize
         fields = ('id', 'title', 'genre', 'year', 'creator')
 
 
+class MovieDetailSerializer(serializers.ModelSerializer):  # create class to serializer model
+    creator = serializers.StringRelatedField(read_only=True)
+    avg_rating = serializers.FloatField(read_only=True)
+
+    class Meta:
+        model = Movie
+        fields = '__all__'
+
+
 class UserSerializer(serializers.ModelSerializer):  # create class to serializer user model
     movies = serializers.PrimaryKeyRelatedField(many=True, queryset=Movie.objects.all())
 

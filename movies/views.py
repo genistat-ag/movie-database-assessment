@@ -1,7 +1,7 @@
 from rest_framework.generics import RetrieveUpdateDestroyAPIView, ListCreateAPIView
 from django_filters import rest_framework as filters
 from .models import Movie, Rating
-from .serializers import MovieSerializer, ReviewSerializer
+from .serializers import MovieSerializer, MovieDetailSerializer, ReviewSerializer
 from .pagination import CustomPagination
 from .filters import MovieFilter
 from .permissions import IsOwnerOrReadOnlyMovie
@@ -25,7 +25,7 @@ class ListCreateMovieAPIView(ListCreateAPIView):
 
 
 class RetrieveUpdateDestroyMovieAPIView(RetrieveUpdateDestroyAPIView):
-    serializer_class = MovieSerializer
+    serializer_class = MovieDetailSerializer
     queryset = Movie.objects.all()
     permission_classes = (IsAuthenticated, IsOwnerOrReadOnlyMovie)
 
