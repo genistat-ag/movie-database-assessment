@@ -2,7 +2,7 @@ from rest_framework import permissions
 from rest_framework.exceptions import PermissionDenied
 
 
-class IsOwnerOrReadOnly(permissions.BasePermission):
+class IsOwnerOrReadOnlyMovie(permissions.BasePermission):
     """
     Custom permission to only allow creator of an object to edit it.
     """
