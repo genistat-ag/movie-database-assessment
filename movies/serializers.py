@@ -1,9 +1,10 @@
 from rest_framework import serializers
-from .models import Movie,Rating
+from .models import Movie, Rating
 from django.contrib.auth.models import User
 
+
 class MovieSerializer(serializers.ModelSerializer):  # create class to serializer model
-    creator = serializers.ReadOnlyField(source='username')
+    creator = serializers.StringRelatedField(read_only=True)
 
     class Meta:
         model = Movie
@@ -19,9 +20,9 @@ class UserSerializer(serializers.ModelSerializer):  # create class to serializer
 
 
 class ReviewSerializer(serializers.ModelSerializer):
-    movie = serializers.PrimaryKeyRelatedField(many=False,queryset=Movie.objects.all())
+    movie = serializers.PrimaryKeyRelatedField(many=False, queryset=Movie.objects.all())
     reviewer = serializers.ReadOnlyField(source='username')
 
     class Meta:
         model = Rating
-        fields = ('id','movie','score','reviewer')
+        fields = ('id', 'movie', 'score', 'reviewer')

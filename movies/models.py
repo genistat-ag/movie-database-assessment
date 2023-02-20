@@ -8,7 +8,7 @@ class Movie(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     creator = models.ForeignKey('auth.User', related_name='films', on_delete=models.CASCADE)
-    avg_rating = models.FloatField(null=True, blank=True)
+    avg_rating = models.FloatField(null=True, blank=True, default=0.0)
 
     class Meta:
         ordering = ['-id']
