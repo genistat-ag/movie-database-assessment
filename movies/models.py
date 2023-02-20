@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 
 class Movie(models.Model):
@@ -20,7 +21,7 @@ class Movie(models.Model):
 class Rating(models.Model):
     movie = models.ForeignKey(Movie, related_name='movie', on_delete=models.CASCADE)
     reviewer = models.ForeignKey('auth.User', related_name='reviewer', on_delete=models.CASCADE)
-    score = models.IntegerField()
+    score = models.PositiveSmallIntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
     created_at = models.DateTimeField(auto_now=True)
     updated_at = models.DateTimeField(auto_now=True)
 
