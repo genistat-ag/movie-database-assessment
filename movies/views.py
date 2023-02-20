@@ -3,7 +3,7 @@ from rest_framework import status
 from rest_framework.generics import RetrieveUpdateDestroyAPIView, ListCreateAPIView, ListAPIView, CreateAPIView
 from django_filters import rest_framework as filters
 from .models import Movie, Rating, Report
-from .serializers import MovieSerializer, MovieDetailSerializer, ReviewSerializer, ReportSerializer
+from .serializers import MovieSerializer, MovieDetailSerializer, ReviewSerializer, ReportSerializer, ReportDetailSerializer
 from .pagination import CustomPagination
 from .filters import MovieFilter
 from .permissions import IsOwnerOrReadOnlyMovie, IsOwnerOrReadOnlyReview
@@ -96,3 +96,16 @@ class ListReportAPIView(ListAPIView):
     serializer_class = ReportSerializer
     queryset = Report.objects.all()
     permission_classes = (IsAdminUser,)
+
+
+class RetrieveUpdateDestroyReportAPIView(RetrieveUpdateDestroyAPIView):
+    serializer_class = ReportDetailSerializer
+    queryset = Report.objects.all()
+    permission_classes = (IsAdminUser,)
+
+    def perform_update(self, serializer):
+        pk = self.kwargs.get('pk')
+        report_queryset = Report.objects.get(pk=pk)
+        if report_queryset:
+            print(serializer.validated_data)
+            serializer.save(state=serializer.validated_data['state'])

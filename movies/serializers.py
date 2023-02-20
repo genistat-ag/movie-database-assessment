@@ -53,3 +53,12 @@ class ReportSerializer(serializers.ModelSerializer):
     class Meta:
         model = Report
         fields = ('id', 'movie', 'state', 'reporter')
+
+
+class ReportDetailSerializer(serializers.ModelSerializer):
+    reporter = serializers.StringRelatedField(read_only=True)
+    movie = serializers.StringRelatedField(read_only=True)
+
+    class Meta:
+        model = Report
+        fields = '__all__'

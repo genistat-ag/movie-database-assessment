@@ -8,5 +8,6 @@ urlpatterns = [
     path('<str:pk>/review/', views.CreateReviewAPIView.as_view(), name='post_review'),
     path('review/<str:pk>/', views.RetrieveUpdateDestroyReviewAPIView.as_view(), name='get_delete_update_review'),
     path('<str:pk>/report/', views.CreateReportAPIView.as_view(), name='post_report'),
-    path('report', views.ListReportAPIView.as_view(), name='get_report'),  # get all report
+    path('report', views.ListReportAPIView.as_view(), name='get_report'),
+    path('report/<str:pk>/', views.RetrieveUpdateDestroyReportAPIView.as_view(), name='get_delete_update_report'),
 ]
