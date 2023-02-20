@@ -9,6 +9,12 @@ class MovieSerializer(serializers.ModelSerializer):  # create class to serialize
     class Meta:
         model = Movie
         fields = ('id', 'title', 'genre', 'year', 'creator')
+        read_only_fields = ('created_at', 'updated_at')
+
+    def update(self, instance, validated_data):
+        # Don't update created_at during updates
+        validated_data.pop('created_at', None)
+        return super().update(instance, validated_data)
 
 
 class MovieDetailSerializer(serializers.ModelSerializer):  # create class to serializer model
@@ -29,8 +35,10 @@ class UserSerializer(serializers.ModelSerializer):  # create class to serializer
 
 
 class ReviewSerializer(serializers.ModelSerializer):
-    movie = serializers.PrimaryKeyRelatedField(many=False, queryset=Movie.objects.all())
-    reviewer = serializers.ReadOnlyField(source='username')
+    # movie = serializers.PrimaryKeyRelatedField(many=False, queryset=Movie.objects.all())
+    # reviewer = serializers.ReadOnlyField(source='username')
+    reviewer = serializers.StringRelatedField(read_only=True)
+    movie = serializers.StringRelatedField(read_only=True)
 
     class Meta:
         model = Rating
