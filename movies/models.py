@@ -14,6 +14,14 @@ class Movie(models.Model):
     class Meta:
         ordering = ['-id']
 
+    def total_report(self):
+        reports = Report.objects.filter(movie=self, state='inappropriate')
+        report = []
+        for r in reports:
+            report.append(r.id)
+
+        return len(report)
+
     def __str__(self):
         return f"{self.title}"
 

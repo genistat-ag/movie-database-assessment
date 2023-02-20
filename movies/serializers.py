@@ -54,6 +54,11 @@ class ReportSerializer(serializers.ModelSerializer):
         model = Report
         fields = ('id', 'movie', 'state', 'reporter')
 
+    def update(self, instance, validated_data):
+        # Don't update created_at during updates
+        validated_data.pop('created_at', None)
+        return super().update(instance, validated_data)
+
 
 class ReportDetailSerializer(serializers.ModelSerializer):
     reporter = serializers.StringRelatedField(read_only=True)

@@ -3,7 +3,8 @@ from rest_framework import status
 from rest_framework.generics import RetrieveUpdateDestroyAPIView, ListCreateAPIView, ListAPIView, CreateAPIView
 from django_filters import rest_framework as filters
 from .models import Movie, Rating, Report
-from .serializers import MovieSerializer, MovieDetailSerializer, ReviewSerializer, ReportSerializer, ReportDetailSerializer
+from .serializers import MovieSerializer, MovieDetailSerializer, ReviewSerializer, ReportSerializer, \
+    ReportDetailSerializer
 from .pagination import CustomPagination
 from .filters import MovieFilter
 from .permissions import IsOwnerOrReadOnlyMovie, IsOwnerOrReadOnlyReview
@@ -24,6 +25,9 @@ class ListCreateMovieAPIView(ListCreateAPIView):
     def perform_create(self, serializer):
         # Assign the user who created the movie
         serializer.save(creator=self.request.user)
+    
+    def get_queryset(self):
+        return self.queryset.exclude(report__state__icontains='inappropriate')
 
 
 class RetrieveUpdateDestroyMovieAPIView(RetrieveUpdateDestroyAPIView):
@@ -60,7 +64,7 @@ class CreateReviewAPIView(CreateAPIView):
             movie.avg_rating = serializer.validated_data['score']
         else:
             movie.avg_rating = (movie.avg_rating + serializer.validated_data['score']) / 2
-        movie.save()
+        movie.save(update_fields=['avg_rating'])
         serializer.save(movie=movie, reviewer=reviewer)
 
 
@@ -76,7 +80,7 @@ class RetrieveUpdateDestroyReviewAPIView(RetrieveUpdateDestroyAPIView):
         reviewer = self.request.user
         if rating_queryset:
             movie_queryset.avg_rating = (movie_queryset.avg_rating + serializer.validated_data['score']) / 2
-            movie_queryset.save()
+            movie_queryset.save(update_fields=['avg_rating'])
         serializer.save(movie=movie_queryset, reviewer=reviewer)
 
 
@@ -105,7 +109,9 @@ class RetrieveUpdateDestroyReportAPIView(RetrieveUpdateDestroyAPIView):
 
     def perform_update(self, serializer):
         pk = self.kwargs.get('pk')
-        report_queryset = Report.objects.get(pk=pk)
-        if report_queryset:
-            print(serializer.validated_data)
-            serializer.save(state=serializer.validated_data['state'])
+        report = Report.objects.get(pk=pk)
+        if report:
+            if serializer.validated_data['state'] == 'Reject report':
+                report.delete()
+            else:
+                serializer.save(state=serializer.validated_data['state'])
