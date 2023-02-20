@@ -27,3 +27,14 @@ class Rating(models.Model):
 
     def __str__(self):
         return f"{self.movie.title}_{str(self.score)}"
+
+
+class Report(models.Model):
+    movie = models.ForeignKey(Movie, related_name='report', on_delete=models.CASCADE)
+    state = models.CharField(max_length=255, default='unresolved')
+    reporter = models.ForeignKey('auth.User', related_name='reporter', on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.movie.title}_{self.state}"

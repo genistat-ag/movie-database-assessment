@@ -2,12 +2,12 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.generics import RetrieveUpdateDestroyAPIView, ListCreateAPIView, ListAPIView, CreateAPIView
 from django_filters import rest_framework as filters
-from .models import Movie, Rating
-from .serializers import MovieSerializer, MovieDetailSerializer, ReviewSerializer
+from .models import Movie, Rating, Report
+from .serializers import MovieSerializer, MovieDetailSerializer, ReviewSerializer, ReportSerializer
 from .pagination import CustomPagination
 from .filters import MovieFilter
 from .permissions import IsOwnerOrReadOnlyMovie, IsOwnerOrReadOnlyReview
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 
 
 # Removes permissions from views
@@ -78,3 +78,21 @@ class RetrieveUpdateDestroyReviewAPIView(RetrieveUpdateDestroyAPIView):
             movie_queryset.avg_rating = (movie_queryset.avg_rating + serializer.validated_data['score']) / 2
             movie_queryset.save()
         serializer.save(movie=movie_queryset, reviewer=reviewer)
+
+
+class CreateReportAPIView(CreateAPIView):
+    serializer_class = ReportSerializer
+    queryset = Report.objects.all()
+    permission_classes = (IsAuthenticated,)
+
+    def perform_create(self, serializer):
+        pk = self.kwargs.get('pk')
+        movie = Movie.objects.get(pk=pk)
+        reporter = self.request.user
+        serializer.save(movie=movie, reporter=reporter)
+
+
+class ListReportAPIView(ListAPIView):
+    serializer_class = ReportSerializer
+    queryset = Report.objects.all()
+    permission_classes = (IsAdminUser,)
