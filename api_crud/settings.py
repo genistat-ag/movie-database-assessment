@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import os
+from datetime import timedelta
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -50,6 +51,9 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_filters',
     'authentication',
+    # custom apps
+    'movies',
+    'django_fsm'
 
 ]
 
@@ -138,3 +142,9 @@ STATIC_URL = '/static/'
 USE_X_FORWARDED_HOST = True
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
+
+
+SIMPLE_JWT = {
+    #Increased time delta for development
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=10),
+}
