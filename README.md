@@ -72,3 +72,63 @@ The acceptance criterias are the tests we will execute on the application to ver
 - Apply rating to all movies by all users
 - Report one movie to the admin and reject it, 
 - Report one movie to the admin and approve it
+
+## Project update
++ checkout to branch ```samrat_HFS/21_02_2023```
++ just run ```pyhton manage.py runserver```
++ ```root dir --> credentials.txt``` --> one superuser, 2 general user
++ ```root dir --> db.sqlite3``` --> all data
+    + 1 superuser, 2 general user
+    + 6 movies (2 movies/person)
+    + 18 ratings (6 ratings/person)
+    + one inappropriate movie tag 
++ **Bug fix**
+    + ```INSTALLED_APPS --> movies```
+    + for registration ```authentication --> serializers.py```:
+        + fixed password validation error
+    + for login ```authentication --> authentication.py``` and ```project dir --> settings.py```
+        1) ```authentication.py``` : custom authentication for login (email/username and password)
+        2) ```setting.py```: overwrite ```AUTHENTICATION_BACKENDS = ['authentication.authentication.AuthenticationBackend',]```
+    + ```Rating``` model is registered in ```movies.admin.py```
+    + ```StringRelatedField``` instead of ```ReadOnlyField``` in ```MovieSerializer --> creator``` for creator ```read only```
+ + **New feature**
+    + ```read_only_fields = ['created_at']``` in ```MovieSerializer``` because no update for anything change except creating movie.
+        + ```MovieSerializer --> update``` method
+    + ```read_only_fields = ['updated_at']``` because no update for avg_rating ```create``` or ```update```
+        + ```movies --> views.py --> CreateReviewAPIView and RetrieveUpdateDestroyReviewAPIView```
+    + ```MovieDetailSerializer``` and ```RetrieveUpdateDestroyMovieAPIView``` for movie detail info as well as update/delete
+    + class ```IsOwnerOrReadOnlyMovie``` for movie update/delete
+        + only movie creator can update/delete movie
+    + class ```IsOwnerOrReadOnlyReview``` for review update/delete
+        + only review creator can update/delete review
+    + class ```ReportSerializer``` for user reporting
+    + ```RetrieveUpdateDestroyReportAPIView``` 
+        + if "Reject report" then report will be closed otherwise "inappropriate"
+        + ```ListCreateMovieAPIView --> get_queryset``` filter inappropriate movie by conditions
+ 
+ + all endpoints:
+    + **_User access & privilege is implemented correctly for all endpoints_**
+    + authentication:
+        + login: ```http://127.0.0.1:8000/api/v1/auth/token/```
+            + input field: ```username(username/email), password```
+        + registration: ```http://127.0.0.1:8000/api/v1/auth/register/```
+            + input field: ```username, password, password2, email, first_name, last_name```
+    + movies:
+        + all movie: ```http://127.0.0.1:8000/api/v1/movies/```
+        + create movie: ```http://127.0.0.1:8000/api/v1/movies/```
+            + input field: ```title, genre, year```
+        + movie detail: ```http://127.0.0.1:8000/api/v1/movies/<str:pk>```
+        + update movie: ```http://127.0.0.1:8000/api/v1/movies/<str:pk>/```
+            + input field: ```title, genre, year```
+        + create rating: ```http://127.0.0.1:8000/api/v1/movies/<str:pk>/review/```
+            + input field: ```score```
+        + update rating: ```http://127.0.0.1:8000/api/v1/movies/review/<str:pk>/```
+            + input field: ```score```
+        + all ratings: ```http://127.0.0.1:8000/api/v1/movies/review```
+        + rating detail: ```http://127.0.0.1:8000/api/v1/movies/review/<str:pk>```
+        + create report: ```http://127.0.0.1:8000/api/v1/movies/<str:pk>/report/```
+        + report detail: ```http://127.0.0.1:8000/api/v1/movies/report/<str:pk>```
+        + update report: ```http://127.0.0.1:8000/api/v1/movies/report/<str:pk>/```
+            + input field: ```state```
+            + value: ```“inappropriate”``` or ```“Reject report”```
+        + all report: ```http://127.0.0.1:8000/api/v1/movies/report```
