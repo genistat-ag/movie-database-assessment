@@ -1,9 +1,11 @@
-from rest_framework.generics import RetrieveUpdateDestroyAPIView, ListCreateAPIView
+from rest_framework.generics import RetrieveUpdateDestroyAPIView, ListCreateAPIView, CreateAPIView, ListAPIView
 from django_filters import rest_framework as filters
-from .models import Movie,Rating
-from .serializers import MovieSerializer,ReviewSerializer
+from django.db.models import Q
+from .models import Movie,Rating,Report
+from .serializers import MovieSerializer, ReviewSerializer, MovieRetrieveSerializer, ReportSerializer, ReportRetrieveSerializer
 from .pagination import CustomPagination
 from .filters import MovieFilter
+from .permissions import IsOwnerOrReadOnly, IsSuperUser
 from rest_framework.permissions import IsAuthenticated
 
 # Removes permissions from views
@@ -17,6 +19,8 @@ class ListCreateMovieAPIView(ListCreateAPIView):
     filterset_class = MovieFilter
     permission_classes = (IsAuthenticated,)
 
+    def get_queryset(self):
+        return Movie.objects.exclude(Q(is_inappropriate=True) & Q(creator=self.request.user))
 
     def perform_create(self, serializer):
         # Assign the user who created the movie
@@ -24,9 +28,9 @@ class ListCreateMovieAPIView(ListCreateAPIView):
 
 
 class RetrieveUpdateDestroyMovieAPIView(RetrieveUpdateDestroyAPIView):
-    serializer_class = MovieSerializer
+    serializer_class = MovieRetrieveSerializer
     queryset = Movie.objects.all()
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsOwnerOrReadOnly,)
 
 
 class ListCreateReviewAPIView(ListCreateAPIView):
@@ -37,3 +41,23 @@ class ListCreateReviewAPIView(ListCreateAPIView):
     def perform_create(self, serializer):
         serializer.save(reviewer=self.request.user)
 
+
+class RetrieveUpdateDestroyReviewAPIView(RetrieveUpdateDestroyAPIView):
+    serializer_class = ReviewSerializer
+    queryset = Rating.objects.all()
+    permission_classes = (IsOwnerOrReadOnly,)
+
+
+class CreateReportAPIView(CreateAPIView):
+    serializer_class=ReportSerializer
+    queryset=Report.objects.all()
+    permission_classes = (IsAuthenticated,)
+
+
+class VerifyReportAPIView(ListAPIView, RetrieveUpdateDestroyAPIView):
+    serializer_class=ReportRetrieveSerializer
+    queryset=Report.objects.all()
+    permission_classes = (IsSuperUser,)
+
+
+    
