@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django_filters import rest_framework as filters
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.generics import (
@@ -89,6 +90,7 @@ class ListCreateReviewAPIView(ListCreateAPIView):
     serializer_class = ReviewSerializer
     queryset = Rating.objects.all()
     permission_classes = (IsAuthenticated,)
+    pagination_class = CustomPagination
 
     def perform_create(self, serializer):
         """Update avg_rating of the reviewed movie"""
@@ -140,6 +142,7 @@ class ListCreateReportAPIView(ListCreateAPIView):
     serializer_class = ReportSerializer
     queryset = Report.objects.all().order_by('-id')
     permission_classes = (IsSuperuserOrAuthenticatedForGetAndPost,)
+    pagination_class = CustomPagination
 
     def perform_create(self, serializer):
         serializer.save(reporter=self.request.user)
@@ -162,7 +165,6 @@ class RetrieveUpdateDestroyReportAPIView(RetrieveUpdateDestroyAPIView):
     serializer_class = ReportSerializer
     queryset = Report.objects.all()
     permission_classes = (IsSuperuser,)
-    pagination_class = CustomPagination
 
     def perform_update(self, serializer):
         """
