@@ -25,13 +25,14 @@ class Rating(models.Model):
 
 class Report(models.Model):
 
-    class Status(models.Choices):
-        UNRESOLVED = 'unresolved'
-        REJECTED =  'rejected'
-        ACCEPTED = "accepted"
+    class Status(models.TextChoices):
+        UNRESOLVED = 'UNRESOLVED', 'Unresolved'
+        REJECTED =  'REJECTED', 'Rejected'
+        ACCEPTED = 'ACCEPTED', "Accepted"
 
     movie = models.ForeignKey(Movie, related_name='reported_movie', on_delete=models.CASCADE)
     report_state = models.CharField(choices=Status.choices, max_length=30, default=Status.UNRESOLVED)
     reporter = models.ForeignKey('auth.User', related_name='reporter', on_delete=models.CASCADE)
+    is_closed = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
