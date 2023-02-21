@@ -8,7 +8,7 @@ from rest_framework.generics import (
 
 from .utils import calculate_movie_review_avg, toggle_reported_movie_is_active
 from .models import Movie, Rating, Report
-from .serializers import MovieSerializer, ReviewSerializer, ReportSerializer
+from .serializers import MovieSerializer, RatingSerializer, ReportSerializer
 from .pagination import CustomPagination
 from .filters import MovieFilter
 from .permissions import (
@@ -87,7 +87,7 @@ class ListCreateReviewAPIView(ListCreateAPIView):
     Description:
     - On Each review submit reviewed movie's avg_rating will be updated.
     """
-    serializer_class = ReviewSerializer
+    serializer_class = RatingSerializer
     queryset = Rating.objects.all()
     permission_classes = (IsAuthenticated,)
     pagination_class = CustomPagination
@@ -114,7 +114,7 @@ class RetrieveUpdateDestroyReviewAPIView(RetrieveUpdateDestroyAPIView):
     Description:
     - On Each review update reviewed movie's avg_rating will be updated.
     """
-    serializer_class = ReviewSerializer
+    serializer_class = RatingSerializer
     queryset = Rating.objects.all()
     permission_classes = (IsAuthenticated, IsReviewerOrReadOnly)
 

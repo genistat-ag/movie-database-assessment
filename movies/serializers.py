@@ -33,7 +33,7 @@ class MovieSerializer(serializers.ModelSerializer):
             result['inappropriate'] = 1
         return result
 
-class ReviewSerializer(serializers.ModelSerializer):
+class RatingSerializer(serializers.ModelSerializer):
     """
     Reposnisble for Serializing Reviews.
     Raises:
