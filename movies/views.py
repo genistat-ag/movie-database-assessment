@@ -1,13 +1,13 @@
-from django.db.models import Avg
+from django.db.models import Avg, Q
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.generics import RetrieveUpdateDestroyAPIView, ListCreateAPIView, UpdateAPIView
 from django_filters import rest_framework as filters
-from .models import Movie,Rating
-from .serializers import MovieSerializer,ReviewSerializer
+from .models import Movie, Rating, Report
+from .serializers import MovieSerializer, ReviewSerializer, ReportSerializer
 from .pagination import CustomPagination
 from .filters import MovieFilter
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 
 from movies.custom_exception import UserNotMatchedException, MyCustomException
 
@@ -24,6 +24,25 @@ class ListCreateMovieAPIView(ListCreateAPIView):
     filterset_class = MovieFilter
     permission_classes = (IsAuthenticated,)
 
+    def get_queryset(self):
+
+        '''
+        This query will filter all unappropriate movie
+        but movie will show to the creator despite unappropriate
+        '''
+        q1 = Report.objects.filter(Q(state=Report.INAPPROPRIATE_MOVIE) ).values('movie_id').all()
+
+        movie_ids = [report['movie_id'] for report in q1]
+
+        return Movie.objects.filter(~Q(id__in=movie_ids) | Q(creator=self.request.user))
+
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
 
     def perform_create(self, serializer):
         # Assign the user who created the movie
@@ -96,3 +115,21 @@ class ListCreateUpdateReviewAPIView(ListCreateAPIView, UpdateAPIView):
 
         return Response(serializer.data, status=status.HTTP_200_OK)
     
+
+
+class ListCreateUpdateReportAPIView(ListCreateAPIView, UpdateAPIView):
+    serializer_class = ReportSerializer
+    queryset = Report.objects.all()
+    permission_classes = [IsAuthenticated, ]
+
+    def get_permissions(self):
+        method = self.request.method
+        return [IsAdminUser(), ] if method in ['GET','PUT'] else [IsAuthenticated()]
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    def perform_create(self, serializer):
+
+        reporter = self.request.user
+        serializer.save(reporter=reporter)

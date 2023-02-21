@@ -52,7 +52,8 @@ INSTALLED_APPS = [
     'django_filters',
     'authentication',
     # custom apps
-    'movies'
+    'movies',
+    'django_fsm'
 
 ]
 
@@ -144,5 +145,6 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(hours=1),
+    #Increased time delta for development
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=10),
 }
