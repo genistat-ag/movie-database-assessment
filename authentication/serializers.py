@@ -11,11 +11,11 @@ class RegisterSerializer(serializers.ModelSerializer):
     )
 
     password = serializers.CharField(
-        read_only=False, required=True, validators=[validate_password],
+        write_only=True, required=True, validators=[validate_password],
         style={'input_type': 'password', 'placeholder': 'Password'}
     )
     password2 = serializers.CharField(
-        read_only=False, required=True, style={'input_type': 'password', 'placeholder': 'Password'}
+        write_only=True, required=True, style={'input_type': 'password', 'placeholder': 'Password'}
     )
 
     class Meta:
