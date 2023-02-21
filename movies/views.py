@@ -26,7 +26,15 @@ class ListCreateMovieAPIView(ListCreateAPIView):
     def perform_create(self, serializer):
         # Assign the user who created the movie
         serializer.save(creator=self.request.user)
-        
+
+    def get_queryset(self):
+        if self.request.user.is_staff:  # admin can see all movies
+            return self.queryset
+        elif not self.request.user.is_staff:  # normal user but movie creator can see also "inappropriate" tag movie
+            return self.queryset.filter(Q(report__state__icontains='inappropriate') & Q(creator=self.request.user) | ~Q(report__state__icontains='inappropriate'))
+        else:  # otherwise "inappropriate" tag movie will be excluded
+            return self.queryset.exclude(Q(report__state__icontains='inappropriate'))
+
 
 class RetrieveUpdateDestroyMovieAPIView(RetrieveUpdateDestroyAPIView):
     serializer_class = MovieDetailSerializer
