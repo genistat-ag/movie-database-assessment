@@ -22,6 +22,11 @@ class ReviewSerializer(serializers.ModelSerializer):
     movie = serializers.PrimaryKeyRelatedField(many=False,queryset=Movie.objects.all())
     reviewer = serializers.ReadOnlyField(source='username')
 
+    def validate_score(self, value):
+        if value < 1 or value > 5:
+            raise serializers.ValidationError("Value must be between 1 to 5")
+        return super().validate(value)
+
     class Meta:
         model = Rating
         fields = ('id','movie','score','reviewer')
