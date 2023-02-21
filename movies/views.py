@@ -11,8 +11,12 @@ from .filters import MovieFilter
 from .permissions import IsOwnerOrReadOnlyMovie, IsOwnerOrReadOnlyReview
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 
-
 # Removes permissions from views
+
+"""
+# Movie create & List of movie
+# Filter movie of inappropriate tag by conditions
+"""
 
 
 class ListCreateMovieAPIView(ListCreateAPIView):
@@ -31,9 +35,15 @@ class ListCreateMovieAPIView(ListCreateAPIView):
         if self.request.user.is_staff:  # admin can see all movies
             return self.queryset
         elif not self.request.user.is_staff:  # normal user but movie creator can see also "inappropriate" tag movie
-            return self.queryset.filter(Q(report__state__icontains='inappropriate') & Q(creator=self.request.user) | ~Q(report__state__icontains='inappropriate'))
+            return self.queryset.filter(Q(report__state__icontains='inappropriate') & Q(creator=self.request.user) | ~Q(
+                report__state__icontains='inappropriate'))
         else:  # otherwise "inappropriate" tag movie will be excluded
             return self.queryset.exclude(Q(report__state__icontains='inappropriate'))
+
+
+""" 
+Movie detail/update/destroy
+"""
 
 
 class RetrieveUpdateDestroyMovieAPIView(RetrieveUpdateDestroyAPIView):
@@ -46,10 +56,21 @@ class RetrieveUpdateDestroyMovieAPIView(RetrieveUpdateDestroyAPIView):
         return queryset
 
 
+""" 
+List of all movie ratings
+"""
+
+
 class ListReviewAPIView(ListAPIView):
     serializer_class = ReviewSerializer
     queryset = Rating.objects.all()
     permission_classes = (IsAuthenticated,)
+
+
+""" 
+# create movie rating
+# update avg_rating in movie
+"""
 
 
 class CreateReviewAPIView(CreateAPIView):
@@ -74,6 +95,11 @@ class CreateReviewAPIView(CreateAPIView):
         serializer.save(movie=movie, reviewer=reviewer)
 
 
+""" 
+rating detail/update/destroy
+"""
+
+
 class RetrieveUpdateDestroyReviewAPIView(RetrieveUpdateDestroyAPIView):
     serializer_class = ReviewSerializer
     queryset = Rating.objects.all()
@@ -90,6 +116,11 @@ class RetrieveUpdateDestroyReviewAPIView(RetrieveUpdateDestroyAPIView):
         serializer.save(movie=movie_queryset, reviewer=reviewer)
 
 
+""" 
+User can report a movie
+"""
+
+
 class CreateReportAPIView(CreateAPIView):
     serializer_class = ReportSerializer
     queryset = Report.objects.all()
@@ -102,10 +133,21 @@ class CreateReportAPIView(CreateAPIView):
         serializer.save(movie=movie, reporter=reporter)
 
 
+""" 
+All reports for only admin
+"""
+
+
 class ListReportAPIView(ListAPIView):
     serializer_class = ReportSerializer
     queryset = Report.objects.all()
     permission_classes = (IsAdminUser,)
+
+
+"""" 
+# report detail/update/destroy
+# if movie is "Reject report" then the report will be close/deleted
+"""
 
 
 class RetrieveUpdateDestroyReportAPIView(RetrieveUpdateDestroyAPIView):
