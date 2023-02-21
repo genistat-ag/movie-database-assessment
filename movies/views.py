@@ -1,3 +1,4 @@
+from django.db.models import Q
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.generics import RetrieveUpdateDestroyAPIView, ListCreateAPIView, ListAPIView, CreateAPIView
@@ -25,10 +26,7 @@ class ListCreateMovieAPIView(ListCreateAPIView):
     def perform_create(self, serializer):
         # Assign the user who created the movie
         serializer.save(creator=self.request.user)
-    
-    def get_queryset(self):
-        return self.queryset.exclude(report__state__icontains='inappropriate')
-
+        
 
 class RetrieveUpdateDestroyMovieAPIView(RetrieveUpdateDestroyAPIView):
     serializer_class = MovieDetailSerializer
