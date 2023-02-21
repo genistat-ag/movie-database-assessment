@@ -1,26 +1,34 @@
-from rest_framework import serializers
-from .models import Movie,Rating
 from django.contrib.auth.models import User
+from rest_framework import serializers
+from .models import Movie,Rating, Report
+from .utils import ChoicesField
 
-class MovieSerializer(serializers.ModelSerializer):  # create class to serializer model
-    creator = serializers.ReadOnlyField(source='username')
-
-    class Meta:
-        model = Movie
-        fields = ('id', 'title', 'genre', 'year', 'creator')
-
-
-class UserSerializer(serializers.ModelSerializer):  # create class to serializer user model
+class UserSerializer(serializers.ModelSerializer):
+    """User Serializer For Movies"""
     movies = serializers.PrimaryKeyRelatedField(many=True, queryset=Movie.objects.all())
 
     class Meta:
         model = User
         fields = ('id', 'username', 'movies')
 
+class MovieSerializer(serializers.ModelSerializer):
+    """Movie's Serializer"""
+    creator = serializers.ReadOnlyField(source='creator.username')
+
+    class Meta:
+        model = Movie
+        fields = ('id', 'title', 'genre', 'year', 'creator',)
+
+    def to_representation(self, instance):
+        result = super().to_representation(instance)
+        if not instance.is_active:
+            result['inappropriate'] = 1
+        return result
 
 class ReviewSerializer(serializers.ModelSerializer):
+    """Review Serializer"""
     movie = serializers.PrimaryKeyRelatedField(many=False,queryset=Movie.objects.all())
-    reviewer = serializers.ReadOnlyField(source='username')
+    reviewer = serializers.ReadOnlyField(source='reviewer.username')
 
     def validate_score(self, value):
         if value < 1 or value > 5:
@@ -30,3 +38,13 @@ class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Rating
         fields = ('id','movie','score','reviewer')
+
+class ReportSerializer(serializers.ModelSerializer):
+    """ Report Serializer"""
+    movie = serializers.PrimaryKeyRelatedField(many=False,queryset=Movie.objects.all())
+    reporter = serializers.ReadOnlyField(source='reporter.username')
+    report_state = ChoicesField(Report.Status.choices)
+
+    class Meta:
+        model = Report
+        fields = ('id','movie','report_state','reporter')

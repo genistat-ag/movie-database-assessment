@@ -5,12 +5,17 @@ from rest_framework.generics import (
     ListCreateAPIView
 )
 
-from .utils import calculate_movie_review_avg
-from .models import Movie,Rating
-from .serializers import MovieSerializer,ReviewSerializer
+from .utils import calculate_movie_review_avg, toggle_reported_movie_is_active
+from .models import Movie, Rating, Report
+from .serializers import MovieSerializer, ReviewSerializer, ReportSerializer
 from .pagination import CustomPagination
 from .filters import MovieFilter
-from .permissions import IsOwnerOrReadOnly, IsReviewerOrReadOnly
+from .permissions import (
+    IsOwnerOrReadOnly,
+    IsReviewerOrReadOnly,
+    IsSuperuser,
+    IsSuperuserOrAuthenticatedForGetAndPost
+)
 
 
 class ListCreateMovieAPIView(ListCreateAPIView):
@@ -49,3 +54,20 @@ class RetrieveUpdateDestroyReviewAPIView(RetrieveUpdateDestroyAPIView):
     def perform_update(self, serializer):
         saved_review = serializer.save(reviewer=self.request.user)
         calculate_movie_review_avg(saved_review.movie_id)
+
+class ListCreateReportAPIView(ListCreateAPIView):
+    serializer_class = ReportSerializer
+    queryset = Report.objects.all()
+    permission_classes = (IsSuperuserOrAuthenticatedForGetAndPost,)
+
+    def perform_create(self, serializer):
+        serializer.save(reporter=self.request.user)
+
+class RetrieveUpdateDestroyReportAPIView(RetrieveUpdateDestroyAPIView):
+    serializer_class = ReportSerializer
+    queryset = Report.objects.all()
+    permission_classes = (IsSuperuser,)
+
+    def perform_update(self, serializer):
+        reported_object = serializer.save()
+        toggle_reported_movie_is_active(reported_object)
