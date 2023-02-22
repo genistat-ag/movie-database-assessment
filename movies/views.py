@@ -53,6 +53,9 @@ class CreateReportAPIView(CreateAPIView):
     queryset=Report.objects.all()
     permission_classes = (IsAuthenticated,)
 
+    def perform_create(self, serializer):
+        serializer.save(reporter=self.request.user)
+
 
 class VerifyReportAPIView(ListAPIView, RetrieveUpdateDestroyAPIView):
     serializer_class=ReportRetrieveSerializer
