@@ -21,12 +21,9 @@ class LoginView(generics.GenericAPIView):
 
     def post(self, request, *args, **kwargs):
         username = request.data.get("username", None)
-        email = request.data.get("email", None)
         password = request.data.get("password", None)
 
-        if email is not None:
-            user = authenticate(request, email=email, password=password)
-        else:
+        if username is not None:
             user = authenticate(request, username=username, password=password)
 
         if user is None:

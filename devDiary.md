@@ -1,4 +1,5 @@
 - djangorestframework-simplejwt==4.6.0 requires python 3.7 and above.. noted in the [pypi](https://pypi.org/project/djangorestframework-simplejwt/4.6.0/).. but [here](https://github.com/genistat-ag/movie-database-assessment/blob/exam/README.md) in the requirements python==3.6 is suggested.. thus this will not work... So, upgrading python version to 3.8. To avoid this kinda situation its always better to use docker!
 - *RuntimeError: Model class movies.models.Movie doesn't declare an explicit app_label and isn't in an application in INSTALLED_APPS.*: Solve is self explanatory.. just adding 'movies' to INSTALLED_APPS in settings.py of the project resolves this issue.
 - In admin.py Rating model wasnt registered.
+- django.db.utils.OperationalError: no such column: movies_movie.avg_rating: Some changes were made to the model but migration wasnt made... makemigrations solved the issue.
 - 

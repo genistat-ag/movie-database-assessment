@@ -17,28 +17,25 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 
 
 class LoginSerializer(serializers.Serializer):
-    username_or_email = serializers.CharField(required=True)
+    username = serializers.CharField(required=True)
     password = serializers.CharField(required=True, write_only=True)
     access_token = serializers.CharField(read_only=True)
     refresh_token = serializers.CharField(read_only=True)
 
     def validate(self, attrs):
-        username_or_email = attrs.get("username_or_email")
+        username = attrs.get("username")
         password = attrs.get("password")
 
-        if username_or_email and password:
+        if username and password:
             user = authenticate(
                 request=self.context.get("request"),
-                username=username_or_email,
-                email=username_or_email,
+                username=username,
                 password=password,
             )
             if not user:
                 raise serializers.ValidationError("Invalid login credentials")
         else:
-            raise serializers.ValidationError(
-                'Must include "username_or_email" and "password".'
-            )
+            raise serializers.ValidationError('Must include "username" and "password".')
 
         refresh = RefreshToken.for_user(user)
         attrs["access_token"] = str(refresh.access_token)
