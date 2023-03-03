@@ -18,6 +18,7 @@ class ListCreateMovieAPIView(ListCreateAPIView):
     pagination_class = CustomPagination
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = MovieFilter
+    permission_classes = (IsAuthenticated,)
 
     def perform_create(self, serializer):
         serializer.save(creator=self.request.user)
