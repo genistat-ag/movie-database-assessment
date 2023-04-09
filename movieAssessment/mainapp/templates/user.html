@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+{% block body %}
+    <div class="row">
+        <div class="col-md-12 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">User Management</h4>
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link {% if action == 'Add' %} active {% endif %}" id="list-tab" data-toggle="tab" href="#list" role="tab" aria-controls="list" aria-selected="true">List</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if action == 'Update' %} active {% endif %}" id="add-tab" data-toggle="tab" href="#add" role="tab" aria-controls="add" aria-selected="false">{{action}}</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane fade {% if action == 'Add' %} show active {% endif %}" id="list" role="tabpanel" aria-labelledby="list-tab">
+                            <div class="media">
+                                <div class="table-responsive">
+                                    <table class="table data-table">
+                                        <thead>
+                                        <tr>
+                                            <th>SL</th>
+                                            <th>Name</th>
+                                            <th>Email</th>
+                                            {% comment %} <th>Mobile</th> {% endcomment %}
+                                            <th>Branch</th>
+                                            <th>Department</th>
+                                            <th>Designation</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for data in user_list %}
+                                                <tr>
+                                                    <td>{{forloop.counter}}</td>
+                                                    <td>{{data.full_name|default:""}}</td>
+                                                    <td>{{data.email|default:""}}</td>
+                                                    {% comment %} <td>{{data.mobile|default:""}}</td> {% endcomment %}
+                                                    <td>{{data.branch|default:""}}</td>
+                                                    <td>{{data.department|default:""}}</td>
+                                                    <td>{{data.designation|default:""}}</td>
+                                                    <td>{% if data.status %} Active {% else %} Inactive {% endif %}</td>
+                                                    <td>
+                                                        <a href="{% url 'main:user_edit' data.id %}" class="btn btn-sm btn-info btn-icon-text">
+                                                            Edit <i class="fas fa-pencil-alt btn-icon-append"></i>                          
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div> 
+                        <div class="tab-pane fade {% if action == 'Update' %} show active {% endif %}" id="add" role="tabpanel" aria-labelledby="add-tab">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <form method="post" {% if action == 'Update' %} action="{% url 'main:user_edit' user.id %}" {% endif %}> {% csrf_token %}
+                                        <div class="form-group">
+                                            <label for="full_name">Full Name</label>
+                                            <input type="text" class="form-control" required name="full_name" value="{{user.full_name|default:""}}" placeholder="Full Name">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="email">Email</label>
+                                            <input type="email" class="form-control" required name="email" value="{{user.email|default:""}}" placeholder="Email">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="mobile">Mobile</label>
+                                            <input type="text" class="form-control" name="mobile" value="{{user.mobile|default:""}}" placeholder="Mobile">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="password_text">Password</label>
+                                            <input type="password" class="form-control" required name="password_text" value="{{user.password_text|default:""}}" placeholder="Password">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Branch</label>
+                                            <select class="form-control select2" name="branch" required>
+                                                <option value="">Select</option>
+                                                {% for data in brach_list %}
+                                                    <option value="{{data.id}}" {% if data.id == user.branch_id %}selected{% endif %}>{{data.name}}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Department</label>
+                                            <select class="form-control select2" name="department" required>
+                                                <option value="">Select</option>
+                                                {% for data in department_list %}
+                                                    <option value="{{data.id}}" {% if data.id == user.department_id %}selected{% endif %}>{{data.value}}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Designation</label>
+                                            <select class="form-control select2" name="designation" required>
+                                                <option value="">Select</option>
+                                                {% for data in designation_list %}
+                                                    <option value="{{data.id}}" {% if data.id == user.designation_id %}selected{% endif %}>{{data.value}}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <div class="form-check form-check-flat form-check-primary">
+                                                <label class="form-check-label">
+                                                    <input type="checkbox" name ="is_admin" class="form-check-input" {% if user.is_admin %}checked{% endif %}>
+                                                    Is Admin
+                                                    <i class="input-helper"></i>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="form-check form-check-flat form-check-primary">
+                                                <label class="form-check-label">
+                                                    <input type="checkbox" name ="status" class="form-check-input" {% if user.status %}checked{% endif %}>
+                                                    Status
+                                                    <i class="input-helper"></i>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary mr-2">{{action}}</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

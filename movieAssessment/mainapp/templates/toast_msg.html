@@ -1,0 +1,42 @@
+{% load static %}
+<script src="{% static 'js/toast.js' %}"></script>
+<script>
+    $(document).ready(function() {
+        {% if messages %}
+            let time_val, title;
+            {% for message in messages %}
+                time_val = false;
+                {% if message.tags == 'success' %}
+                    time_val = 5000;
+                    title = "Success!";
+                {% elif message.tags == 'info' %}
+                    title = "Information!";
+                {% elif message.tags == 'warning' %}
+                    title = "Warning!";
+                {% elif message.tags == 'error' %}
+                    title = "Error!";
+                {% endif %}
+                $.toast({
+                    heading: title,
+                    text: '{{ message }}',
+                    position: 'top-right',
+                    loaderBg:'#fff',
+                    icon: '{{ message.tags }}',
+                    hideAfter : time_val,
+                });
+            {% endfor %}
+        {% endif %}
+    });
+    
+    function toasterMsg(type='', msg='', time=''){
+        $.toast({
+            heading     : type.toUpperCase() + '!',
+            text        : msg,
+            position    : 'top-right',
+            loaderBg    : '#fff',
+            icon        : type,
+            hideAfter   : time,
+            stack       : false
+        });
+    }
+</script>
