@@ -4,6 +4,7 @@ from django.utils.safestring import mark_safe
 from django.contrib.auth.models import User
 from django.utils.safestring import mark_safe
 from django.conf import settings
+from django.db.models import Avg
 from django.contrib.auth.models import (
     BaseUserManager, AbstractBaseUser
 )
@@ -14,7 +15,7 @@ class Users(AbstractBaseUser):
     last_name          = models.CharField(max_length = 100,blank=True, null=True)
     username           = models.CharField(max_length = 100,unique=True)
     user_pic           = models.ImageField(upload_to='users/', blank=True, null=True)
-    password           = models.CharField(max_length = 100)
+    password           = models.CharField(max_length = 250)
     password_text      = models.CharField(max_length = 100)
     mobile             = models.CharField(max_length = 20, blank=True, null=True)
     email              = models.EmailField(max_length = 100,unique=True)
@@ -24,10 +25,10 @@ class Users(AbstractBaseUser):
     is_admin           = models.BooleanField(default=False)
     status             = models.BooleanField(default=True)
 
-    USERNAME_FIELD     = ('email','username')
+    USERNAME_FIELD     = ('email')
     
     def __str__(self):
-        return '%s' % (self.full_name)
+        return '%s' % str(self.first_name) +" "+str(self.last_name)
 
     class Meta:
         db_table = 'users'
@@ -46,6 +47,12 @@ class Movie(models.Model):
 
     def __str__(self):
         return self.title
+
+    @property
+    def movie_rating(self):
+        "average rating of movie"
+        average_rating = Rating.objects.filter(movie_id=self.id).aggregate(avg_rating=Avg('stars'))['avg_rating'] or 0
+        return average_rating
 
     class Meta:
         db_table = 'movies'

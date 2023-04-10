@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block body %}
+    <div class="row">
+        <div class="col-md-12 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Movie List</h4>
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link {% if action == 'Edit' %} active {% endif %}" id="list-tab" data-toggle="tab" href="#list" role="tab" aria-controls="list" aria-selected="true">List</a>
+                        </li>
+                        <!-- <li class="nav-item">
+                            <a class="nav-link {% if action == 'Update' %} active {% endif %}" id="add-tab" data-toggle="tab" href="#add" role="tab" aria-controls="add" aria-selected="false">{{action}}</a>
+                        </li> -->
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="list" role="tabpanel" aria-labelledby="list-tab">
+                            <div class="media">
+                                <div class="table-responsive">
+                                    <table class="table data-table">
+                                        <thead>
+                                        <tr>
+                                            <th>SL</th>
+                                            <th>Title</th>
+                                            <th>Cover</th>
+                                            <th>Rating</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for data in movies %}
+                                                <tr>
+                                                    <td>{{forloop.counter}}</td>
+                                                    <td>{{data.title|default_if_none:"N/A"}}</td>
+                                                    <td>
+                                                    	<img {% if data.movie_cover %} src="/assets/media/{{data.movie_cover}}" {% endif %} alt="cover"/>
+                                                    </td>
+                                                    <td>{{data.movie_rating|default:"0"}}</td>
+                                                    <td>
+                                                        <a href="" class="btn btn-sm btn-info btn-icon-text">
+                                                            Details <i class="fas fa-layer btn-icon-append"></i>
+                                                            <!-- In details view, user will get the entry option for their rating input or report input -->
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div> 
+                        <div class="tab-pane fade {% if action == 'Update' %} show active {% endif %}" id="add" role="tabpanel" aria-labelledby="add-tab">
+                            <div class="row">
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

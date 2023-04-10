@@ -26,8 +26,8 @@
     <!-- partial:partials/_navbar.html -->
     <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row default-layout-navbar">
       <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
-        <a class="navbar-brand brand-logo" href="#"><img {% if settings and settings.com_logo %} src="/assets{{settings.com_logo.url}}" {% endif %} alt="logo"/></a>
-        <a class="navbar-brand brand-logo-mini" href="#"><img {% if settings and settings.com_logo %} src="/assets{{settings.com_logo.url}}" {% endif %} alt="logo"/></a>
+        <a class="navbar-brand brand-logo" href="#"><img src="/assets/images/samples/300x300/6.jpg" alt="logo"/></a>
+        <a class="navbar-brand brand-logo-mini" href="#"><img src="/assets/images/samples/300x300/6.jpg" alt="logo"/></a>
       </div>
       <div class="navbar-menu-wrapper d-flex align-items-stretch">
         <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
@@ -150,36 +150,8 @@
                   </p>
                 </div>
               </a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item preview-item">
-                <div class="preview-thumbnail">
-                    <img src="images/faces/face2.jpg" alt="image" class="profile-pic">
-                </div>
-                <div class="preview-item-content flex-grow">
-                  <h6 class="preview-subject ellipsis font-weight-medium">Tim Cook
-                    <span class="float-right font-weight-light small-text">15 Minutes ago</span>
-                  </h6>
-                  <p class="font-weight-light small-text">
-                    New product launch
-                  </p>
-                </div>
-              </a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item preview-item">
-                <div class="preview-thumbnail">
-                    <img src="images/faces/face3.jpg" alt="image" class="profile-pic">
-                </div>
-                <div class="preview-item-content flex-grow">
-                  <h6 class="preview-subject ellipsis font-weight-medium"> Johnson
-                    <span class="float-right font-weight-light small-text">18 Minutes ago</span>
-                  </h6>
-                  <p class="font-weight-light small-text">
-                    Upcoming board meeting
-                  </p>
-                </div>
-              </a>
             </div>
-          </li> {% endcomment %}
+          </li>
           <li class="nav-item nav-profile dropdown">
             <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown">
               <img {% if request.session.user_pic %} src="/assets/media/{{request.session.user_pic}}" {% endif %} alt="profile"/>
@@ -196,15 +168,15 @@
               </a>
             </div>
           </li>
-          <li class="nav-item nav-settings d-none d-lg-block">
+          <li class="">
             <a class="nav-link" href="#">
               <i class="fas fa-ellipsis-h"></i>
             </a>
           </li>
         </ul>
-        <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
+        <!-- <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
           <span class="fas fa-bars"></span>
-        </button>
+        </button> -->
       </div>
     </nav>
     <!-- partial -->
@@ -404,20 +376,14 @@
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" data-toggle="collapse" href="#sales" aria-expanded="false" aria-controls="sales">
-              <i class="fa fa-shopping-cart menu-icon"></i>
-              <span class="menu-title">Sales</span>
+            <a class="nav-link" data-toggle="collapse" href="#movies" aria-expanded="false" aria-controls="movies">
+              <i class="fa fa-database menu-icon"></i> 
+              <span class="menu-title"> Movies Management</span>
               <i class="menu-arrow"></i>
             </a>
-            <div class="collapse" id="sales">
+            <div class="collapse" id="movies">
               <ul class="nav flex-column sub-menu">
-                <li class="nav-item d-none d-lg-block"> <a class="nav-link" href="{% url 'sales:order' %}">Order</a></li>
-                <li class="nav-item d-none d-lg-block">
-                  <a class="nav-link" href="{% url 'sales:invoice_list' %}">Invoice List</a>
-                </li>
-                <li class="nav-item d-none d-lg-block">
-                  <a class="nav-link" href="{% url 'sales:sales_report' %}">Sales Report</a>
-                </li>
+                <li class="nav-item d-none d-lg-block"> <a class="nav-link" href="{% url 'main:movies' %}">Movies</a></li>
               </ul>
             </div>
           </li>
@@ -429,46 +395,35 @@
             </a>
             <div class="collapse" id="users">
               <ul class="nav flex-column sub-menu">
-                <li class="nav-item d-none d-lg-block"> <a class="nav-link" href="{% url 'main:user_management' %}">Users</a></li>
+                <li class="nav-item d-none d-lg-block"> <a class="nav-link" href="#">Users</a></li>
               </ul>
             </div>
           </li>
           <li class="nav-item">
-            <a class="nav-link" data-toggle="collapse" href="#products" aria-expanded="false" aria-controls="products">
+            <a class="nav-link" data-toggle="collapse" href="#ratings" aria-expanded="false" aria-controls="ratings">
               <i class="fas fa-pen-square menu-icon"></i>
-              <span class="menu-title">Product Management</span>
+              <span class="menu-title">Rating Management</span>
               <i class="menu-arrow"></i>
             </a>
-            <div class="collapse" id="products">
+            <div class="collapse" id="ratings">
               <ul class="nav flex-column sub-menu">
-                <li class="nav-item d-none d-lg-block"> <a class="nav-link" href="{% url 'main:products' %}">Products</a></li>
+                <li class="nav-item d-none d-lg-block"> <a class="nav-link" href="{% url 'main:ratings' %}">Ratings</a></li>
               </ul>
             </div>
           </li>
           <li class="nav-item">
-            <a class="nav-link" data-toggle="collapse" href="#purchase" aria-expanded="false" aria-controls="purchase">
+            <a class="nav-link" data-toggle="collapse" href="#reports" aria-expanded="false" aria-controls="reports">
               <i class="fa fa-desktop menu-icon"></i> 
-              <span class="menu-title">Purchase</span>
+              <span class="menu-title">Reports Management</span>
               <i class="menu-arrow"></i>
             </a>
-            <div class="collapse" id="purchase">
+            <div class="collapse" id="reports">
               <ul class="nav flex-column sub-menu">
-                <li class="nav-item d-none d-lg-block"> <a class="nav-link" href="{% url 'main:purchase' %}">New Purchase</a></li>
+                <li class="nav-item d-none d-lg-block"> <a class="nav-link" href="{% url 'main:reports' %}">Reports</a></li>
               </ul>
             </div>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" data-toggle="collapse" href="#stocks" aria-expanded="false" aria-controls="stocks">
-              <i class="fa fa-database menu-icon"></i> 
-              <span class="menu-title"> Stocks Management</span>
-              <i class="menu-arrow"></i>
-            </a>
-            <div class="collapse" id="stocks">
-              <ul class="nav flex-column sub-menu">
-                <li class="nav-item d-none d-lg-block"> <a class="nav-link" href="{% url 'main:stocks' %}">Stocks</a></li>
-              </ul>
-            </div>
-          </li>
+          
         </ul>
       </nav>
       <!-- partial -->
@@ -482,8 +437,7 @@
         <!-- partial:partials/_footer.html -->
         <footer class="footer">
           <div class="d-sm-flex justify-content-center justify-content-sm-between">
-            <span class="text-muted text-center text-sm-left d-block d-sm-inline-block">Copyright © 2018 . All rights reserved.</span>
-            <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">Hand-crafted & made with <i class="far fa-heart text-danger"></i></span>
+            <span class="text-muted text-center text-sm-left d-block d-sm-inline-block">Copyright © 2023 . All rights reserved.</span
           </div>
         </footer>
         <!-- partial -->
@@ -514,30 +468,7 @@
   <script src="{% static 'js/data-table.js' %}"></script>
   {% include 'toast_msg.html' %}
   <script>
-    $('.category').on('change', function () {
-      if($(this).val()){
-      $.ajax({
-        cache: false,
-        url: "{% url 'main:get_sub_categories' %}",
-        type: "POST",
-        data: { category: $(this).val() },
-        success: function (data) {
-          $(".sub_category").html('');
-          $(".sub_category").append($('<option>', { value: '', text: "Select" }));
-          for (var i = 0; i < data["data_list"].length; i++) {
-            $(".sub_category").append($('<option>', { value: data["data_list"][i].id, text: data["data_list"][i].name }));
-          }
-            //$(".sub_category").select2({
-            //  tags: true,
-            //});
-        },
-        error: function (xhr, desc, err) {
-          // errorMsg(err)
-        }
-      });
-    }
-  
-    });
+
   </script>
 </body>
 

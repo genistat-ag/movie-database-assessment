@@ -8,7 +8,7 @@
   {% load static %}
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>Movie Management System || Login</title>
+  <title>Movie Management System || Registration</title>
   <!-- plugins:css -->
   <link rel="stylesheet" href="{% static 'vendors/iconfonts/font-awesome/css/all.min.css' %}">
   <link rel="stylesheet" href="{% static 'vendors/css/vendor.bundle.base.css' %}">
@@ -33,17 +33,28 @@
               <div class="brand-logo">
                 <img src="/assets/images/lightbox/thumb-v-v-2.jpg"  alt="logo">
               </div>
-              <h4>Welcome back!</h4>
+              <h4>Welcome to Movie Management System!</h4>
               <form class="pt-3" method="post"> {% csrf_token %}
                 <div class="form-group">
-                  <label for="username">Username/Email</label>
+                  <label for="username">Username</label>
                   <div class="input-group">
                     <div class="input-group-prepend bg-transparent">
                       <span class="input-group-text bg-transparent border-right-0">
                         <i class="fa fa-user text-primary"></i>
                       </span>
                     </div>
-                    <input type="text" class="form-control form-control-lg border-left-0" name="username" id="username" placeholder="Username/Email">
+                    <input type="text" class="form-control form-control-lg border-left-0" name="username" id="username" placeholder="Username" required>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="email">Email</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend bg-transparent">
+                      <span class="input-group-text bg-transparent border-right-0">
+                        <i class="fa fa-envelope text-primary"></i>
+                      </span>
+                    </div>
+                    <input type="email" class="form-control form-control-lg border-left-0" name="email" id="email" placeholder="Email" required>
                   </div>
                 </div>
                 <div class="form-group">
@@ -54,12 +65,11 @@
                         <i class="fa fa-lock text-primary"></i>
                       </span>
                     </div>
-                    <input type="password" class="form-control form-control-lg border-left-0" name="password" id="password" placeholder="Password">                        
+                    <input type="password" class="form-control form-control-lg border-left-0" name="password" id="password" placeholder="Password" required>                        
                   </div>
                 </div>
                 <div class="my-3">
-                  <input type="submit" class="btn btn-block btn-primary btn-lg font-weight-medium" value="Login" />
-                  <a class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn" href="{% url 'main:registration' %}">New Registration</a>
+                  <input type="submit" class="btn btn-block btn-primary btn-lg font-weight-medium" value="Register" />
                 </div>
               </form>
             </div>
