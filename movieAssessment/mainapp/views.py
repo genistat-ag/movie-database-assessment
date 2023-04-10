@@ -11,4 +11,4 @@ from mainapp.forms import *
 from django.db.models.query_utils import Q
 from django.db.models import F
 
-from .view.user_views import *
+from .view.app_views import * 
