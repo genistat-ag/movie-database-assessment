@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Movie,Rating
+from .models import Movie,Rating,Report,STATE_CHOICES
 from django.contrib.auth.models import User
 
 class MovieSerializer(serializers.ModelSerializer):  # create class to serializer model
@@ -25,3 +25,21 @@ class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Rating
         fields = ('id','movie','score','reviewer')
+    
+    """
+        As stated in clause `A user can give a rating between 1 to 5 for any specific movie`
+        It would handle that clause
+    """
+    def validate_score(self, value):
+        if value < 1 or value > 5:
+            raise serializers.ValidationError("Score must be between 1 and 5.")
+        return value
+    
+class ReportSerializer(serializers.ModelSerializer):  # create class to serializer user model
+    movie = serializers.PrimaryKeyRelatedField(many=False, queryset=Movie.objects.all())
+    state = serializers.ChoiceField(choices=STATE_CHOICES, default="unresolved")
+    reporter = serializers.ReadOnlyField(source='username')
+    
+    class Meta:
+        model = Report
+        fields = ('id', 'movie', 'state', 'reporter')

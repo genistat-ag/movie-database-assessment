@@ -50,7 +50,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_filters',
     'authentication',
-
+    'movies',   # Bug Fix: App was not installed, So django was giving warning about it
 ]
 
 SITE_ID = 1
@@ -115,6 +115,19 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+"""
+Feature Fix:
+============================
+As stated Users should be able to log in with both the below combinations
+    - username and password
+    - email and password
+
+Just overriding the default auth backend with custom `MultiAttributeAuthBackend`
+"""
+AUTHENTICATION_BACKENDS = [
+    'authentication.auth_backend.MultiAttributeAuthBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
