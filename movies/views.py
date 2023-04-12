@@ -1,8 +1,7 @@
 from rest_framework.response import Response
 from django_filters import rest_framework as filters
-from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
-from rest_framework.generics import RetrieveUpdateDestroyAPIView, ListCreateAPIView, CreateAPIView, UpdateAPIView
+from rest_framework.generics import RetrieveUpdateDestroyAPIView, ListCreateAPIView, UpdateAPIView
 
 from .filters import MovieFilter
 from .pagination import CustomPagination
@@ -38,6 +37,7 @@ class RetrieveUpdateDestroyMovieAPIView(RetrieveUpdateDestroyAPIView):
     serializer_class = MovieSerializer
     queryset = Movie.objects.all()
     permission_classes = (IsOwnerOrReadOnly,)
+    http_method_names = ['get', 'put', 'delete']
 
 
 class ListCreateReviewAPIView(ListCreateAPIView):
@@ -53,6 +53,7 @@ class RetrieveUpdateDestroyReviewAPIView(RetrieveUpdateDestroyAPIView):
     serializer_class = ReviewSerializer
     queryset = Rating.objects.all()
     permission_classes = (IsOwnerOrReadOnly,)
+    http_method_names = ['get', 'put', 'delete']
 
 
 class ListCreateReportAPIView(ListCreateAPIView):
@@ -73,6 +74,7 @@ class ReportReview(UpdateAPIView):
     serializer_class = ReportSerializer
     queryset = Report.objects.all()
     permission_classes = [IsAdminUser]
+    http_method_names = ['put']
 
 
 class ApproveReportAPIView(ReportReview):
