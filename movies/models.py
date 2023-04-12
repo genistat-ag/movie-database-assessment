@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from django.core.exceptions import ValidationError
 
 
 from django_fsm import FSMField, transition
@@ -18,6 +19,8 @@ class Movie(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     creator = models.ForeignKey('auth.User', related_name='films', on_delete=models.CASCADE)
     avg_rating = models.FloatField(null=True,blank=True)
+    is_hidden = models.BooleanField(default=False, null=True, blank=True)
+    is_report_closed = models.BooleanField(default=False, null=True, blank=True)
 
     class Meta:
         ordering = ['-id']
@@ -39,14 +42,22 @@ class Report(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    @transition(field=state, source=['unresolved', 'mark_as_inappropriate'], target='reject_report')
-    def to_state_mark_as_inappropriate(self):
-        pass
-
+    """
+        Here as per System Description docs said `State Management should be implemented with the state machine pattern`
+        Implementing the state with Finite State Machine Pattern
+    """
     @transition(field=state, source=['unresolved', 'reject_report'], target='mark_as_inappropriate')
+    def to_state_mark_as_inappropriate(self):
+        self.movie.is_hidden = True
+        self.movie.save()
+
+    @transition(field=state, source=['unresolved', 'mark_as_inappropriate'], target='reject_report')
     def to_state_reject_report(self):
-        pass
+        self.movie.is_report_closed=True
+        self.movie.save()
 
     @transition(field=state, source=['reject_report','mark_as_inappropriate'], target='unresolved')
     def to_state_unresolved(self):
-        pass
+        self.movie.is_report_closed=False
+        self.movie.is_hidden = False
+        self.movie.save()

@@ -2,7 +2,16 @@ asgiref==3.3.1
 Django==3.1.8
 django-filter==2.4.0
 djangorestframework==3.12.2
+# here below with python3.6 & 4.4.0 having a bug: {trying to decode a str object}. Also 4.6.0 is not supported in python 3.6
+# So to properly work after installing djangorestframework-simplejwt 4.4.0, need to manually modify site-package of location
+# "env/lib/python3.6/site-packages/rest_framework_simplejwt/backends.py", line 35
+# replay `return token.decode('utf-8')` with `return token`
 djangorestframework-simplejwt==4.4.0
+
+# below is dependency for the Finite state machine implementation
 django-fsm==2.8.1
+
+# For swagger UI
+drf_yasg==1.21.5
 pytz==2021.1
 sqlparse==0.4.1

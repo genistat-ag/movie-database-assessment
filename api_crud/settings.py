@@ -47,8 +47,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # third-party packages
     'rest_framework',
+    'drf_yasg',
     'django_filters',
+
+    # internal apps
     'authentication',
     'movies',   # Bug Fix: App was not installed, So django was giving warning about it
 ]

@@ -21,6 +21,7 @@ class UserSerializer(serializers.ModelSerializer):  # create class to serializer
 class ReviewSerializer(serializers.ModelSerializer):
     movie = serializers.PrimaryKeyRelatedField(many=False,queryset=Movie.objects.all())
     reviewer = serializers.ReadOnlyField(source='username')
+    score=serializers.IntegerField()
 
     class Meta:
         model = Rating
@@ -35,10 +36,25 @@ class ReviewSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Score must be between 1 and 5.")
         return value
     
-class ReportSerializer(serializers.ModelSerializer):  # create class to serializer user model
+class ReportSerializer(serializers.ModelSerializer):
     movie = serializers.PrimaryKeyRelatedField(many=False, queryset=Movie.objects.all())
-    state = serializers.ChoiceField(choices=STATE_CHOICES, default="unresolved")
     reporter = serializers.ReadOnlyField(source='username')
+    state = serializers.ChoiceField(choices=STATE_CHOICES, required=False)
+
+    # Info: Here Using the Finite State Pattern to Change the Report Type
+    def update(self, instance, validated_data):
+        if self.context['request'].user.is_superuser:
+            _state = validated_data.get('state', instance.state)
+            if _state == "mark_as_inappropriate":
+                instance.to_state_mark_as_inappropriate()
+            if _state == "reject_report":
+                instance.to_state_reject_report()
+            if _state == "unresolved":
+                instance.to_state_unresolved()
+            instance.save()
+        else:
+            raise serializers.ValidationError('Only superadmins can change the state of a report.')
+        return instance
     
     class Meta:
         model = Report
