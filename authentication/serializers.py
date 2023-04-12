@@ -15,7 +15,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         style={'input_type': 'password', 'placeholder': 'Password'}
     )
     password2 = serializers.CharField(
-        read_only=False, required=True, style={'input_type': 'password', 'placeholder': 'Password'}
+        write_only=True, required=True, style={'input_type': 'password', 'placeholder': 'Password'}
     )
 
     class Meta:
@@ -23,8 +23,6 @@ class RegisterSerializer(serializers.ModelSerializer):
         fields = ('username', 'password', 'password2', 'email', 'first_name', 'last_name')
 
     def validate(self, attrs):
-        if attrs['password'] == attrs['password2']:
-            raise serializers.ValidationError({"password": "Password fields didn't match."})
         if attrs['password'] != attrs['password2']:
             raise serializers.ValidationError({"password": "Password fields didn't match."})
         return attrs
@@ -32,7 +30,6 @@ class RegisterSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         del validated_data['password2']
         user = User.objects.create(**validated_data)
-
         user.set_password(validated_data['password'])
         user.save()
 

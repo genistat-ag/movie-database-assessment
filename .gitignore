@@ -109,3 +109,5 @@ venv.bak/
 
 # Database
 db.sqlite3
+/authentication/migrations
+/movies/migrations
