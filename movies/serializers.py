@@ -16,6 +16,14 @@ class MovieDetailSerializer(serializers.ModelSerializer):  # create class to ser
         model = Movie
         fields = ('id', 'title', 'genre', 'year', 'creator', 'avg_rating')
 
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        request = self.context.get('request')
+        if request and request.user.is_authenticated:
+            if request.user == instance.creator:
+                data['creator'] = instance.creator.username
+        return data
+
 class UserSerializer(serializers.ModelSerializer):  # create class to serializer user model
     movies = serializers.PrimaryKeyRelatedField(many=True, queryset=Movie.objects.all())
 

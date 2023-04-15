@@ -13,6 +13,7 @@ from .serializers import (
 from .pagination import CustomPagination
 from .filters import MovieFilter
 from rest_framework.permissions import IsAuthenticated
+from .permissions import IsOwnerOrReadOnly #need to import permission class
 
 # Removes permissions from views
 
@@ -38,9 +39,10 @@ class ListUserOwnMoviesAPIView(ListAPIView):
         return Movie.objects.filter(creator=self.request.user)
 
 class RetrieveUpdateDestroyMovieAPIView(RetrieveUpdateDestroyAPIView):
-    serializer_class = MovieDetailSerializer
-    queryset = Movie.objects.all()
-    permission_classes = (IsAuthenticated,)
+    serializer_class = MovieSerializer
+    permission_classes = (IsOwnerOrReadOnly,)  #permisson neeed to change only owner to update 
+    def get_queryset(self):
+        return Movie.objects.filter()
 
 
 class ListCreateReviewAPIView(ListCreateAPIView):
