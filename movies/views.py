@@ -43,7 +43,7 @@ class ListUserOwnMoviesAPIView(ListAPIView):
         return Movie.objects.filter(creator=self.request.user)
 
 class RetrieveUpdateDestroyMovieAPIView(RetrieveUpdateDestroyAPIView):
-    serializer_class = MovieSerializer
+    serializer_class = MovieDetailSerializer
     permission_classes = (IsOwnerOrReadOnly,)  #permisson neeed to change only owner to update 
     def get_queryset(self):
         return Movie.objects.filter(is_inappropriate=False)
