@@ -2,6 +2,7 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -37,3 +38,14 @@ class RegisterSerializer(serializers.ModelSerializer):
         user.save()
 
         return user
+
+
+class UserLogInTokenObtainPairSerializer(TokenObtainPairSerializer):
+    """Custom UserLogInTokenObtainPairSerializer to allow authentication using email or username"""
+
+    def validate(self, attrs):
+        credentials = {
+            'username': attrs.get("username"),
+            'password': attrs.get("password")
+        }
+        return super().validate(credentials)
