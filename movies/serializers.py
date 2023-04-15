@@ -33,9 +33,9 @@ class UserSerializer(serializers.ModelSerializer):  # create class to serializer
 
 
 class ReviewSerializer(serializers.ModelSerializer):
-    movie = serializers.PrimaryKeyRelatedField(many=False,queryset=Movie.objects.all())
-    reviewer = serializers.ReadOnlyField(source='username')
+    movie = serializers.PrimaryKeyRelatedField(queryset=Movie.objects.all())
+    creator = serializers.ReadOnlyField(source='creator.username')
 
     class Meta:
         model = Rating
-        fields = ('id','movie','score','reviewer')
+        fields = ('id', 'movie', 'score', 'creator')

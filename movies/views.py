@@ -39,17 +39,36 @@ class ListUserOwnMoviesAPIView(ListAPIView):
         return Movie.objects.filter(creator=self.request.user)
 
 class RetrieveUpdateDestroyMovieAPIView(RetrieveUpdateDestroyAPIView):
-    serializer_class = MovieSerializer
+    serializer_class = MovieDetailSerializer
     permission_classes = (IsOwnerOrReadOnly,)  #permisson neeed to change only owner to update 
     def get_queryset(self):
         return Movie.objects.filter()
 
 
 class ListCreateReviewAPIView(ListCreateAPIView):
+    """   Create review for a Movie   """
+
     serializer_class = ReviewSerializer
-    queryset = Rating.objects.all()
     permission_classes = (IsAuthenticated,)
 
-    def perform_create(self, serializer):
-        serializer.save(reviewer=self.request.user)
+    def get_queryset(self):
+        movie_id = self.kwargs.get('movie_id')
+        return Rating.objects.filter(movie_id=movie_id)
 
+    def perform_create(self, serializer):
+        serializer.save(creator=self.request.user)
+        movie = serializer.validated_data['movie']
+        movie.update_avg_rating()
+
+
+class RetrieveUpdateDestroyReviewAPIView(RetrieveUpdateDestroyAPIView):
+    """"  User can change their review """
+
+    serializer_class = ReviewSerializer
+    queryset = Rating.objects.all()
+    permission_classes = (IsOwnerOrReadOnly,) #permisson neeed to change only owner to update
+
+    def perform_update(self, serializer):
+        serializer.save()
+        movie = serializer.validated_data['movie']
+        movie.update_avg_rating()
