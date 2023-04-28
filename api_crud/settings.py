@@ -54,7 +54,7 @@ INSTALLED_APPS = [
                      'rest_framework',
                      'django_filters',
                      'authentication',
-                     # 'rest_framework_swagger',  # Swagger UI
+                     'drf_yasg',
 
                  ] + OTHER_APPS
 

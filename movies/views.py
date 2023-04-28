@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.generics import RetrieveUpdateDestroyAPIView, ListCreateAPIView, CreateAPIView, UpdateAPIView, \
     ListAPIView
@@ -58,7 +59,7 @@ class ListCreateReviewAPIView(ListCreateAPIView):
 class RetrieveUpdateDestroyReviewAPIView(RetrieveUpdateDestroyAPIView):
     serializer_class = ReviewSerializer
     queryset = Rating.objects.all()
-    permission_classes = (IsAuthenticated,IsReviewerOrReadOnly)
+    permission_classes = (IsAuthenticated, IsReviewerOrReadOnly)
 
 
 class ReportMovieView(CreateAPIView):
@@ -71,10 +72,6 @@ class ReportMovieView(CreateAPIView):
     serializer_class = ReportSerializer
     permission_classes = [IsAuthenticated]
 
-    # @swagger_auto_schema(
-    #     request_body=ReportSerializer,
-    #     responses={status.HTTP_201_CREATED: ReportSerializer()}
-    # )
     def post(self, request, movie_id):
         """
         Report a movie as inappropriate.
@@ -106,10 +103,6 @@ class UpdateReportView(UpdateAPIView):
     permission_classes = [IsAdminUser]
     lookup_url_kwarg = 'report_id'
 
-    # @swagger_auto_schema(
-    #     request_body=ReportSerializer,
-    #     responses={status.HTTP_200_OK: ReportSerializer()}
-    # )
     def put(self, request, *args, **kwargs):
         """
         Update the state of a report.
@@ -145,9 +138,6 @@ class ReportListView(ListAPIView):
     serializer_class = ReportSerializer
     permission_classes = [IsAdminUser]
 
-    # @swagger_auto_schema(
-    #     responses={status.HTTP_200_OK: ReportSerializer(many=True)}
-    # )
     def get(self, request, *args, **kwargs):
         """
         Get a list of all reports.
