@@ -5,9 +5,9 @@ from django.contrib.auth.models import User
 
 class MovieSerializer(serializers.ModelSerializer):  # create class to serializer model
     creator = serializers.ReadOnlyField(
-        source='creator.username')  # access creator's username from creator parent model/ user model
+        source='creator.username')  # BUG_FIX: access creator's username from creator parent model/ user model
     avg_rating = serializers.ReadOnlyField()
-    state = serializers.SerializerMethodField()
+    state = serializers.SerializerMethodField() # Added movie state field if movie has been reported as inappropriate show as inappropriate
 
     class Meta:
         model = Movie
@@ -38,7 +38,7 @@ class UserSerializer(serializers.ModelSerializer):  # create class to serializer
 
 class ReviewSerializer(serializers.ModelSerializer):
     movie = serializers.PrimaryKeyRelatedField(many=False, queryset=Movie.objects.all())
-    reviewer = serializers.ReadOnlyField(source='reviewer.username') # access reviewer's username from user model
+    reviewer = serializers.ReadOnlyField(source='reviewer.username') # BUG_FIX: access reviewer's username from user model
 
     class Meta:
         model = Rating
@@ -46,7 +46,7 @@ class ReviewSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
         """
-        Check that the score is between 1 and 5
+        validation added to Check that the score is between 1 and 5
         """
         if attrs['score'] < 1 or attrs['score'] > 5:
             raise serializers.ValidationError("Score must be between 1 and 5")

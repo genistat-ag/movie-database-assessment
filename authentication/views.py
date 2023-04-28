@@ -20,6 +20,8 @@ class RegisterView(generics.CreateAPIView):
 class MyTokenObtainPairView(TokenObtainPairView):
     """
     JWT Custom Token Claims View
+    custom authentication view created to login with username or email and password
+    also custom serializer is used to return custom claims
     """
 
     serializer_class = CustomTokenObtainPairSerializer

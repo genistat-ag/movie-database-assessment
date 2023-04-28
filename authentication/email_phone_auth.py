@@ -7,7 +7,8 @@ User = get_user_model()
 
 class EmailUsernameAuthenticationBackend(object):
     """
-    custom authentication backend for email or username
+    custom authentication backend for email or username and password authentication
+    validate user using email or username and password and return user
     """
 
     @staticmethod
