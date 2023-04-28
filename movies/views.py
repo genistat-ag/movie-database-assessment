@@ -72,6 +72,10 @@ class ReportMovieView(CreateAPIView):
     serializer_class = ReportSerializer
     permission_classes = [IsAuthenticated]
 
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
     def post(self, request, movie_id):
         """
         Report a movie as inappropriate.

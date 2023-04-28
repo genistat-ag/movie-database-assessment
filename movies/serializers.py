@@ -54,9 +54,12 @@ class ReviewSerializer(serializers.ModelSerializer):
 
 
 class ReportSerializer(serializers.ModelSerializer):
+    user = serializers.ReadOnlyField(
+        source='user.username')
     class Meta:
         model = Report
         fields = ('id', 'movie', 'user', 'state')
+        read_only_fields = ('movie', 'user')
 
     def validate_state(self, value):
         """
