@@ -34,6 +34,7 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': (
         'django_filters.rest_framework.DjangoFilterBackend',
     ),
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema'
 
 }
 
@@ -53,6 +54,7 @@ INSTALLED_APPS = [
                      'rest_framework',
                      'django_filters',
                      'authentication',
+                     # 'rest_framework_swagger',  # Swagger UI
 
                  ] + OTHER_APPS
 
