@@ -2,6 +2,7 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -37,3 +38,33 @@ class RegisterSerializer(serializers.ModelSerializer):
         user.save()
 
         return user
+
+
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    """
+    JWT Custom Token Claims Serializer
+    """
+
+    # @staticmethod
+    # def validate_email_verification_status(user):
+    #     from allauth.account import app_settings
+    #
+    #     if (
+    #             app_settings.EMAIL_VERIFICATION
+    #             == app_settings.EmailVerificationMethod.MANDATORY
+    #             and not user.emailaddress_set.filter(
+    #         email=user.email, verified=True
+    #     ).exists()
+    #     ):
+    #         raise serializers.ValidationError(_("E-mail is not verified."))
+
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+        # cls.validate_email_verification_status(user)
+        # Add custom claims
+        token["email"] = user.email
+        token["is_superuser"] = user.is_superuser
+        token["is_staff"] = user.is_staff
+
+        return token
