@@ -1,12 +1,22 @@
 from django_filters import rest_framework as filters
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.generics import (
+    ListCreateAPIView,
+    RetrieveUpdateDestroyAPIView,
+    UpdateAPIView,
+)
+from rest_framework.permissions import IsAdminUser, IsAuthenticated
+from rest_framework.response import Response
 
 from .filters import MovieFilter
-from .models import Movie, Rating
+from .models import Movie, Rating, Report
 from .pagination import CustomPagination
 from .permissions import IsOwnerOrReadOnly
-from .serializers import MovieSerializer, ReviewSerializer
+from .serializers import (
+    CreateReportSerializer,
+    MovieSerializer,
+    ReportSerializer,
+    ReviewSerializer,
+)
 
 
 class ListCreateMovieAPIView(ListCreateAPIView):
@@ -21,7 +31,7 @@ class ListCreateMovieAPIView(ListCreateAPIView):
         # Assign the user who created the movie
         serializer.save(creator=self.request.user)
 
-    # bug: filtering not done for inappropriate movies when user is not creator
+    # new: filtering not done for inappropriate movies when user is not creator
     def get_queryset(self):
         query = super().get_queryset()
         ids = []
@@ -57,3 +67,74 @@ class RetrieveUpdateDestroyReviewAPIView(RetrieveUpdateDestroyAPIView):
     queryset = Rating.objects.all()
     permission_classes = (IsOwnerOrReadOnly,)
     http_method_names = ["get", "put", "delete"]
+
+
+# new: endpoints to create or list reported movies
+class ListCreateReportAPIView(ListCreateAPIView):
+    serializer_class = CreateReportSerializer
+    queryset = Report.objects.all()
+
+    def get_permissions(self):
+        self.permission_classes = [IsAdminUser]
+        if self.request.method == "POST":
+            self.permission_classes = [IsAuthenticated]
+        return super().get_permissions()
+
+    def perform_create(self, serializer):
+        serializer.save(reporter=self.request.user)
+
+
+# new: endpoint to update reported movies
+class ReportReview(UpdateAPIView):
+    serializer_class = ReportSerializer
+    queryset = Report.objects.all()
+    permission_classes = [IsAdminUser]
+    http_method_names = ["put"]
+
+
+# new: endpoints to approve reported movie to mark as inappropriate
+class ApproveReportAPIView(ReportReview):
+    def update(self, request, *arg, **kwargs):
+        obj = self.get_object()
+        try:
+            obj.update_as_approve()
+            obj.save()
+            return Response(self.get_serializer(obj).data)
+        except Exception:
+            return Response("report previously resolved")
+
+
+# new: endpoints to reject reported movie to remain as appropriate
+class RejectReportAPIView(ReportReview):
+    def update(self, request, *arg, **kwargs):
+        obj = self.get_object()
+        try:
+            obj.update_as_reject()
+            obj.save()
+            return Response(self.get_serializer(obj).data)
+        except Exception:
+            return Response("report previously resolved")
+
+
+# new: endpoints to reject previously approved reports to mark as appropriate
+class ApproveToRejectReportAPIView(ReportReview):
+    def update(self, request, *arg, **kwargs):
+        obj = self.get_object()
+        try:
+            obj.update_from_approve_to_reject()
+            obj.save()
+            return Response(self.get_serializer(obj).data)
+        except Exception:
+            return Response("report previously resolved")
+
+
+# new: endpoints to approve previously rejected reports to mark as inappropriate
+class RejectToApproveReportAPIView(ReportReview):
+    def update(self, request, *arg, **kwargs):
+        obj = self.get_object()
+        try:
+            obj.update_from_reject_to_approve()
+            obj.save()
+            return Response(self.get_serializer(obj).data)
+        except Exception:
+            return Response("report previously resolved")

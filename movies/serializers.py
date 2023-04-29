@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 
-from .models import Movie, Rating
+from .models import Movie, Rating, Report
 
 
 class MovieSerializer(serializers.ModelSerializer):  # create class to serializer model
@@ -33,9 +33,33 @@ class ReviewSerializer(serializers.ModelSerializer):
         model = Rating
         fields = ("id", "movie", "score", "reviewer")
 
-    # bug: no method available previously to create a new review
+    # new: no method available previously to create a new review
     def create(self, validated_data):
         author = self.context["request"].user
         if Rating.objects.filter(movie=validated_data["movie"], creator=author).exists():
-            raise serializers.ValidationError({"error": "You already reviewed this movie"})
+            raise serializers.ValidationError({"error": "movie already reviewed"})
+        return super().create(validated_data)
+
+
+# new: serializer for retrieving reported movie information
+class ReportSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Report
+        fields = ["id", "movie", "reporter", "status"]
+        read_only_fields = ["movie", "reporter"]
+
+
+# new: serializer for storing reported movie information
+class CreateReportSerializer(serializers.ModelSerializer):
+    movie = serializers.PrimaryKeyRelatedField(many=False, queryset=Movie.objects.all())
+    reporter = serializers.ReadOnlyField(source="reporter.username")
+
+    class Meta:
+        model = Report
+        fields = ["id", "movie", "reporter", "status"]
+
+    def create(self, validated_data):
+        author = self.context["request"].user
+        if Report.objects.filter(movie=validated_data["movie"], reporter=author).exists():
+            raise serializers.ValidationError({"error": "movie already reported"})
         return super().create(validated_data)
