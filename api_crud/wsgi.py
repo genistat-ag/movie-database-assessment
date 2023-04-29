@@ -1,5 +1,4 @@
-"""
-WSGI config for api_crud project.
+"""WSGI config for api_crud project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 

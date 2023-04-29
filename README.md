@@ -70,5 +70,5 @@ The acceptance criterias are the tests we will execute on the application to ver
 - Create two regular users and one super admin
 - Create two movies per user
 - Apply rating to all movies by all users
-- Report one movie to the admin and reject it, 
+- Report one movie to the admin and reject it,
 - Report one movie to the admin and approve it
