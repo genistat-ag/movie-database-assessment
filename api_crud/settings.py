@@ -34,7 +34,6 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': (
         'django_filters.rest_framework.DjangoFilterBackend',
     ),
-
 }
 
 
@@ -50,7 +49,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_filters',
     'authentication',
-
+    'movies',
 ]
 
 SITE_ID = 1
@@ -137,4 +136,3 @@ STATIC_URL = '/static/'
 
 USE_X_FORWARDED_HOST = True
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-
