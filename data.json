@@ -1,0 +1,182 @@
+[
+    {
+        "model": "auth.user",
+        "pk": 1,
+        "fields": {
+            "password": "pbkdf2_sha256$216000$1YHiLc59aDDG$qezGrqI1Y1+U8RU8zTCTu9Xwm7RyVEUjVluvc4bIgnc=",
+            "last_login": "2023-04-28T12:25:15.781Z",
+            "is_superuser": true,
+            "username": "yeamin21",
+            "first_name": "",
+            "last_name": "",
+            "email": "yeamin21@outlook.com",
+            "is_staff": true,
+            "is_active": true,
+            "date_joined": "2023-04-28T12:24:51.488Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "auth.user",
+        "pk": 2,
+        "fields": {
+            "password": "pbkdf2_sha256$216000$ykEabwIU5kOG$QA1qdBdG9ocqDanFcJGgNa8kGt6v54o0tRUStXXtkIE=",
+            "last_login": null,
+            "is_superuser": false,
+            "username": "user1",
+            "first_name": "",
+            "last_name": "",
+            "email": "user1@ymail.com",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2023-04-28T12:25:46Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "auth.user",
+        "pk": 3,
+        "fields": {
+            "password": "pbkdf2_sha256$216000$yDHjpj6Uu3pJ$X3aBngGZO/NmJq0NUOH2daeKfPxpa0VSNrccsH5okQw=",
+            "last_login": null,
+            "is_superuser": false,
+            "username": "user2",
+            "first_name": "",
+            "last_name": "",
+            "email": "user2@ymail.com",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2023-04-28T12:26:29Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "movies.movie",
+        "pk": 1,
+        "fields": {
+            "title": "The Godfather",
+            "genre": "Drama",
+            "year": 1972,
+            "created_at": "2023-04-28T12:28:07.338Z",
+            "updated_at": "2023-04-28T12:28:07.338Z",
+            "creator": 2,
+            "avg_rating": 5.0
+        }
+    },
+    {
+        "model": "movies.movie",
+        "pk": 2,
+        "fields": {
+            "title": "The Godfather 2",
+            "genre": "Drama",
+            "year": 1974,
+            "created_at": "2023-04-28T12:28:36.093Z",
+            "updated_at": "2023-04-28T12:28:36.093Z",
+            "creator": 2,
+            "avg_rating": 4.0
+        }
+    },
+    {
+        "model": "movies.movie",
+        "pk": 3,
+        "fields": {
+            "title": "The Godfather 3",
+            "genre": "Drama",
+            "year": 1990,
+            "created_at": "2023-04-28T12:30:39.723Z",
+            "updated_at": "2023-04-28T12:30:39.723Z",
+            "creator": 1,
+            "avg_rating": 4.0
+        }
+    },
+    {
+        "model": "movies.movie",
+        "pk": 4,
+        "fields": {
+            "title": "The Shawshank Redemption",
+            "genre": "Drama",
+            "year": 1994,
+            "created_at": "2023-04-28T12:46:06.758Z",
+            "updated_at": "2023-04-28T12:46:06.758Z",
+            "creator": 1,
+            "avg_rating": null
+        }
+    },
+    {
+        "model": "movies.rating",
+        "pk": 1,
+        "fields": {
+            "movie": 3,
+            "reviewer": 1,
+            "score": 4,
+            "created_at": "2023-04-28T12:31:35.308Z",
+            "updated_at": "2023-04-28T12:31:35.309Z"
+        }
+    },
+    {
+        "model": "movies.rating",
+        "pk": 2,
+        "fields": {
+            "movie": 3,
+            "reviewer": 2,
+            "score": 4,
+            "created_at": "2023-04-28T12:36:37.619Z",
+            "updated_at": "2023-04-28T12:36:37.619Z"
+        }
+    },
+    {
+        "model": "movies.rating",
+        "pk": 3,
+        "fields": {
+            "movie": 2,
+            "reviewer": 2,
+            "score": 4,
+            "created_at": "2023-04-28T12:36:48.584Z",
+            "updated_at": "2023-04-28T12:36:48.584Z"
+        }
+    },
+    {
+        "model": "movies.rating",
+        "pk": 4,
+        "fields": {
+            "movie": 1,
+            "reviewer": 1,
+            "score": 5,
+            "created_at": "2023-04-28T12:46:54.300Z",
+            "updated_at": "2023-04-28T12:46:54.300Z"
+        }
+    },
+    {
+        "model": "movies.report",
+        "pk": 1,
+        "fields": {
+            "movie": 4,
+            "reporter": 2,
+            "state": "reject",
+            "is_closed": true
+        }
+    },
+    {
+        "model": "movies.report",
+        "pk": 2,
+        "fields": {
+            "movie": 3,
+            "reporter": 3,
+            "state": "inappropriate",
+            "is_closed": false
+        }
+    },
+    {
+        "model": "movies.report",
+        "pk": 3,
+        "fields": {
+            "movie": 1,
+            "reporter": 1,
+            "state": "unresolved",
+            "is_closed": false
+        }
+    }
+]
