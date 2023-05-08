@@ -50,7 +50,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_filters',
     'authentication',
-
+    'movies', # app including missing here
+    'drf_yasg',
 ]
 
 SITE_ID = 1
